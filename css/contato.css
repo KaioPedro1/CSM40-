@@ -1,0 +1,55 @@
+
+.container_lateral{
+    padding-left: 5vw;
+    width: 35vw;
+    height: 60vh;
+    float:left;
+    color: #002cff;
+    margin-top: 30px;
+    background: #e5e5e5;
+    
+}
+
+.container_lateral h1{
+    text-align: left;
+    margin-top: 30px;
+}
+.container_formulario{
+    margin-left: 0;
+    width:35vw;
+    height: 60vh;
+    
+    border-radius: 10px;
+    float:left;
+    padding-left:10vw;
+    padding-right:10vw;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.field{
+	width: 35vw;
+	border: 2px solid black;
+	outline: none;
+	font-size: 1.1rem;
+	margin-bottom: 22px;
+	transition: .3s;
+}
+
+.btn:hover{
+    background-color: #343438 ;
+}
+.btn{
+	width: 35vw;
+	padding: 0.5rem 1rem;
+	background-color: #016efe;
+	color: #fff;
+	font-size: 1.1rem;
+	border: none;
+	outline: none;
+	cursor: pointer;
+    border-radius: 5px;
+}
+textarea{
+	min-height: 150px;
+}
