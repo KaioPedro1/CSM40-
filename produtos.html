@@ -1,63 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <script src="produtos.js" defer></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="produtos.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
     crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/produtos.css">
-    <link rel="stylesheet" href="css/barraMenu.css">
-    <title>Produtos</title>
+  <link rel="stylesheet" href="css/produtos.css">
+  <link rel="stylesheet" href="css/barraMenu.css">
+  <title>Produtos</title>
 </head>
+
 <body>
-    <nav>    
-        <label class="logo">
-            <img src="imagens\logo.png" width="125px">
-        </label>
-          <ul>
-              <li><a href="index.html">Home</a> </li>
-              <li><a href="produtos.html">Produtos</a>
-                    
-                    <ul><!--Lista para o submenu quando adicionarmos o css-->
-                               <li><a href="produtos.html">Hatch</a></li>
-                               <li><a href="#">Sedan</a></li>
-                               <li><a href="#">Picape</a></li>
-                               <li><a href="#">SUV</a></li>
-                    </ul>
-          
-               </li>   
-              <li><a href="sobre.html">Sobre</a></li>
-              <li><a href="contato.html">Contato</a></li>
-              <li><a href="pedidos.html">Pedidos</a></li>
-              <li><a href="administracao.html">Administração</a></li>
-              <li><a href="login.html">Login</a></li>
-          </ul>
-     </nav>
-     <!--BOTAO CARRINHO-->
-     <div class="fixed-bottom">
-      <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-          <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
-          <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id = "carrinhoContador">
-            0
-          </span>
-      </button>
-    </div>
-    <!--OFFCANVAS CARRINHO-->
-    <aside>
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasRightLabel"><h1>Carrinho</h1></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <div class="" style="height: 30vh; overflow: auto;">
+  <nav>
+    <label class="logo">
+      <img src="imagens\logo.png" width="125px">
+    </label>
+    <ul>
+      <li><a href="index.html">Home</a> </li>
+      <li><a href="produtos.html">Produtos</a>
+
+        <ul>
+          <!--Lista para o submenu quando adicionarmos o css-->
+          <li><a href="produtos.html">Hatch</a></li>
+          <li><a href="#">Sedan</a></li>
+          <li><a href="#">Picape</a></li>
+          <li><a href="#">SUV</a></li>
+        </ul>
+
+      </li>
+      <li><a href="sobre.html">Sobre</a></li>
+      <li><a href="contato.html">Contato</a></li>
+      <li><a href="pedidos.html">Pedidos</a></li>
+      <li><a href="administracao.html">Administração</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  <!--BOTAO CARRINHO-->
+  <div class="fixed-bottom">
+    <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+      <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
+      <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
+        0
+      </span>
+    </button>
+  </div>
+  <!--OFFCANVAS CARRINHO-->
+  <aside>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">
+          <h1>Carrinho</h1>
+          <hr>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="container h-75" id = "carrinhoProdutos" style=" overflow: auto;">
+        
+      </div>
+        <!--<div style="height: 60vh; overflow: auto;">
           <ol class="list-group list-group-numbered">
             <li class="list-group-item d-flex justify-content-between align-items-start">
               <div class="ms-2 me-auto">
@@ -65,41 +75,65 @@
                 Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
               </div>
               <span class="badge bg-primary rounded-pill">R$ 150.000</span>
-            </li>         
-          </ol>
-          <footer class="position-absolute bottom-0 w-100">
-            <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
-              <div style="border-style: solid; width: 100%; text-align: center ">
-                <h5>Subtotal:<span class="badge text-bg-light">R$: 150.000,00</span>
-              </h5>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Chevrolet Onix Plus</div>
+                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
               </div>
-              <BUtton class="p-2 btn btn-outline-secondary" >Finalizar compra</BUtton>
-              <BUtton class="p-2 btn btn-outline-secondary" >Continuar comprando</BUtton>
-              <BUtton class="p-2 btn btn-outline-secondary" >Limpar carrinho</BUtton>
+              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
+            </li>   
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Chevrolet Onix Plus</div>
+                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
+              </div>
+              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
+            </li>   
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">Chevrolet Onix Plus</div>
+                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
+              </div>
+              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
+            </li> 
+          </ol>-->
+          
+        <footer class="position-absolute bottom-0 h-25" style="width: 95%;">
+          <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
+            <div style="border-style: solid; width: 100%; text-align: center; border-right: none; border-left: none;">
+              <h5>Subtotal:<span class="badge text-bg-light">R$: 150.000,00</span>
+              </h5>
+            </div>
+            <BUtton class="p-2 btn btn-outline-secondary">Finalizar compra</BUtton>
+            <BUtton class="p-2 btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close">Continuar
+              comprando</BUtton>
+            <BUtton class="p-2 btn btn-outline-secondary" onclick = "carrinho.limparCarrinho()">Limpar carrinho</BUtton>
           </div>
-          </footer>
-        </div>
-        
-    </aside>
-    <!--FILTRO LATERAL ESQUERDA-->
-    <main class="container-fluid">
-      <br>
-      <div class="row">
-        <div class= "col-2">
-          <p>Filtros</p>
-          <ul>
-            <li><a>Chevrolet</a></li>
-            <li><a>Fiat</a></li>
-            <li><a>Hyundai</a></li>
-            <li><a>Volkswagen</a></li>
-            <li><a>Toyota</a></li>
-          </ul>
-        </div>  
-        <!--SECAO PRINCIPAL COM OS PRODUTOS INSERIDOS VIA JS-->
-      <section id="produtos" class="card mb-3 col-10"></section> 
+        </footer>
+      </div>
 
-      </div>  
-      
-    </main>
+  </aside>
+  <!--FILTRO LATERAL ESQUERDA-->
+  <main class="container-fluid">
+    <br>
+    <div class="row">
+      <div class="col-2">
+        <p>Filtros</p>
+        <ul>
+          <li><a>Chevrolet</a></li>
+          <li><a>Fiat</a></li>
+          <li><a>Hyundai</a></li>
+          <li><a>Volkswagen</a></li>
+          <li><a>Toyota</a></li>
+        </ul>
+      </div>
+      <!--SECAO PRINCIPAL COM OS PRODUTOS INSERIDOS VIA JS-->
+      <section id="produtos" class="card mb-3 col-10"></section>
+
+    </div>
+
+  </main>
 </body>
+
 </html>

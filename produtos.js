@@ -3,14 +3,17 @@ const listar_categoria_URL= "http://loja.buiar.com/?key=35xkr4&f=json&c=categori
 const produtosDivID = document.getElementById('produtos');
 const corBadgeVermelha = "position-absolute translate-middle badge rounded-pill text-bg-danger"
 const corBadgeVerde = "position-absolute translate-middle badge rounded-pill text-bg-success"
+const carrinhoProdutos = document.getElementById('carrinhoProdutos');
 
 /* variaveis globais*/
 var lista_produtos
 var lista_categorias
 var categoria_hash_map = new Map()
+var carrinho;
 
 /* treinando async, await, fetch e promise, aqui é a mesma coisa que utilizar o XMLhttpRequest*/
 async function getData(){
+    carrinho = new Carrinho();
     let responseProduto = await fetch(listar_produto_URL);
     lista_produtos = await responseProduto.json();
 
@@ -26,9 +29,8 @@ document.addEventListener("DOMContentLoaded", async () =>{
         await getData();
         tratamentoProdutos();
         for(let k=0; k<lista_produtos.dados.length;k++){
-            criaElementosHTML(lista_produtos.dados[k])
+            criaCatalogoHTML(lista_produtos.dados[k])
         }
-
 })
 
 function tratamentoProdutos(){
@@ -40,13 +42,13 @@ function tratamentoProdutos(){
     }
 }
 
-function criaElementosHTML(dadosProdutos){
+function criaCatalogoHTML(dadosProdutos){
     let newSection = document.createElement('section');
     newSection.classList.add("produto");
     newSection.classList.add("row");
     newSection.classList.add("g-0");
     newSection.id=dadosProdutos.id;
-    newSection.addEventListener('dblclick',()=>{adicionarCarrinho(dadosProdutos.id)})
+    newSection.addEventListener('dblclick',()=>{carrinho.addProduto(dadosProdutos.id)})
     newSection.innerHTML= `
             <div class="col-md-3">
                 <img id = "img_${dadosProdutos.id}"src="https://www.webmotors.com.br/imagens/prod/348146/CHEVROLET_ONIX_1.0_FLEX_MANUAL_34814611043340082.png?s=fill&w=440&h=330&q=80&t=true" class="figure img-fluid rounded-start">
@@ -62,7 +64,7 @@ function criaElementosHTML(dadosProdutos){
             <div class="col-md-3 card text-center">
                 <div class="card-body">
                     <h1 class="card-text">${dadosProdutos.preco}</h1>
-                    <a href="#" class="btn btn-primary btn-lg" onclick="adicionarCarrinho(${dadosProdutos.id})">Adicionar ao carrinho</a>
+                    <a href="#" class="btn btn-primary btn-lg" onclick="carrinho.addProduto(${dadosProdutos.id})">Adicionar ao carrinho</a>
                     <a href="contato.html" class="btn btn-secondary btn-lg">Entre em contato</a>
                 </div>
             </div>
@@ -84,13 +86,142 @@ function criaElementosHTML(dadosProdutos){
         document.getElementById('img_'+dadosProdutos.id).src=dadosProdutos.imagem;
     }
 }
+function criaCarrinhoOffcanvasHTML(produto){
+    let newRow = document.createElement('div');
+    newRow.classList.add("row");
 
-function adicionarCarrinho(id){
-    imgCarrinho=document.getElementById('imagemCarrinho');
-    carrinhoQTD= document.getElementById('carrinhoContador');
-    if(carrinhoQTD.innerText==0){
-        imgCarrinho.src="imagens/cart-fill.svg"
-        carrinhoQTD.className = corBadgeVerde;
+    newRow.innerHTML =  `<div class="accordion col-9" id="accordion_${produto.id}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading_${produto.id}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${produto.id}"
+                         aria-expanded="false"  aria-controls="collapse_${produto.id}">
+                        ${produto.nome} <span class="badge bg-primary rounded-pill">${produto.preco}</span>
+                    </button>
+                    </h2>
+                    <div id="collapse_${produto.id}" class="accordion-collapse collapse" aria-labelledby="heading_${produto.id}"
+                    data-bs-parent="#accordion_${produto.id}">
+                    <div class="accordion-body">
+                    ${produto.descricao}
+                    </div>
+                    </div>
+                </div>
+                </div>
+                <div class="teste col-3"><button class="w-50" onclick="carrinho.addProduto(${produto.id})">+</button><button class="w-50">-</button><span><input type="text" name="quant[1]" class="form-control input-number"value="${produto.quantidade}" min="1" max="10" disabled ></span></div>
+            </div>`;
+    carrinhoProdutos.appendChild(newRow);
+}
+function atualizaBotoesOffcanvasHTML(){
+
+}
+class Carrinho{
+    constructor(){
+        //array de produtoCarrinho
+        this.HTMLimgCarrinho=document.getElementById('imagemCarrinho');
+        this.HTMLcarrinhoQTD= document.getElementById('carrinhoContador');
+        this.produto = [];
+        this.is_empty = true;
+    } 
+    getCarrinhoQuantidade(){
+        let contador = 0;
+        for(let k=0; k<this.produto.length;k++){
+            if(this.produto.lenght == 0){
+                return contador;
+            }
+            contador+=this.produto[k].quantidade;
+        }
+        return contador;
     }
-    carrinhoQTD.innerText++;   
+    verificaProdutoExisteCarrinho(id){
+        for(let k=0; k<this.produto.length;k++){
+            if(this.produto[k].id == id){
+                return true;
+            }
+        }
+        return false;
+    }
+    addProduto(id){
+        this.is_empty= false;
+        //condicional para verificar se o produto já existe no carrinho, se já existir só atualiza a quantidade, caso nao exista adiciona cria um novo objeto e adiciona na lista
+        if(this.verificaProdutoExisteCarrinho(id))
+        {
+            //esse loop é só para pegar o index do produto e atualizar a quantidade do objeto, da pra melhorar isso aqui, talvez retornando o index na funcão acima
+            for(let k=0; k<this.produto.length;k++)
+            {
+                if(this.produto[k].id == id)
+                {
+                this.produto[k].atualizaQuantidade('+');
+                }
+            }
+        }
+        
+        else 
+        {//loop para achar o item na lista global
+            for(let k=0; k<lista_produtos.dados.length;k++)
+            {
+                if(lista_produtos.dados[k].id == id)
+                {
+                    //instancia um objeto da classe ProdutoCarrinho usando o outro objeto da lista global
+                    let prod = Object.assign(new ProdutoCarrinho(), lista_produtos.dados[k]);
+                    this.produto.push(prod);
+                    criaCarrinhoOffcanvasHTML(prod)
+                }
+            }    
+        }
+        this.atualizaIconeCarrinho();
+    }
+    atualizaIconeCarrinho(){
+        if(this.is_empty){
+            this.HTMLimgCarrinho.src="imagens/cart.svg"
+            this.HTMLcarrinhoQTD.className = corBadgeVermelha;
+            this.HTMLcarrinhoQTD.innerText = this.getCarrinhoQuantidade(); 
+        }else{
+            this.HTMLimgCarrinho.src="imagens/cart-fill.svg"
+            this.HTMLcarrinhoQTD.className = corBadgeVerde;
+            this.HTMLcarrinhoQTD.innerText = this.getCarrinhoQuantidade(); 
+        }
+    }
+    removeProduto(id){
+        return
+    }
+    getSubtotalCarrinho(){
+        let total = 0
+        for (let k=0; k<this.produto.length;k++){
+            let preco = this.produto[k].preco.split('R$')[1];
+            total += this.produto[k].quantidade*parseFloat(preco)
+        }
+        return (total);
+    }
+    limparCarrinho(){
+        this.produto =[]
+        this.is_empty = true;
+        this.atualizaIconeCarrinho() 
+        while (carrinhoProdutos.firstChild) {
+            carrinhoProdutos.removeChild(carrinhoProdutos.lastChild);
+          }
+    }
+}
+class ProdutoCarrinho{
+    constructor(){
+        this.quantidade=1;
+        this.id;
+        this.codigo;
+        this.categoria;
+        this.nome;
+        this.descricao;
+        this.preco;
+        this.imagem;
+        this.peso;
+    }
+    atualizaQuantidade(operador)
+    {
+        if(operador=="-" && this.quantidade>=1){
+            this.quantidade--;
+        }
+        else if(operador == "+"){
+            this.quantidade++;       
+        }
+        else{
+            console.log("ERRO: QUANTIDADE NÃO PODE SER MENOR QUE 0");
+        }
+    }
 }
