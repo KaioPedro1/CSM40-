@@ -44,7 +44,7 @@
       <li><a href="login.html">Login</a></li>
     </ul>
   </nav>
-  <!--BOTAO CARRINHO-->
+  <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
   <div class="fixed-bottom">
     <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
       <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
@@ -64,7 +64,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <div class="container h-75" id = "carrinhoProdutos" style=" overflow: auto;">
+        <div class="container h-75" id = "carrinhoProdutos" style=" overflow: scroll;">
         
       </div>
         <!--<div style="height: 60vh; overflow: auto;">
@@ -99,10 +99,10 @@
             </li> 
           </ol>-->
           
-        <footer class="position-absolute bottom-0 h-25" style="width: 95%;">
+        <footer class="position-absolute bottom-0" style="width: 95%; height: 20%;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
-            <div style="border-style: solid; width: 100%; text-align: center; border-right: none; border-left: none;">
-              <h5>Subtotal:<span class="badge text-bg-light">R$: 150.000,00</span>
+            <div id = "containerSubtotal">
+              <h5>Subtotal:<span class="badge text-bg-light" id="carrinho_subtotal">R$:0</span>
               </h5>
             </div>
             <BUtton class="p-2 btn btn-outline-secondary">Finalizar compra</BUtton>
@@ -114,10 +114,11 @@
       </div>
 
   </aside>
-  <!--FILTRO LATERAL ESQUERDA-->
+  <!--CONTEUDO PRINCIPAL, CATALOGO-->
   <main class="container-fluid">
     <br>
-    <div class="row">
+    <div class="row"> 
+      <!--FILTRO LATERAL ESQUERDA-->
       <div class="col-2">
         <p>Filtros</p>
         <ul>

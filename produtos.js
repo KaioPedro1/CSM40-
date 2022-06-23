@@ -41,7 +41,6 @@ function tratamentoProdutos(){
         lista_produtos.dados[k].preco = parseInt(lista_produtos.dados[k].preco).toLocaleString('pt-br', formato)
     }
 }
-
 function criaCatalogoHTML(dadosProdutos){
     let newSection = document.createElement('section');
     newSection.classList.add("produto");
@@ -64,8 +63,8 @@ function criaCatalogoHTML(dadosProdutos){
             <div class="col-md-3 card text-center">
                 <div class="card-body">
                     <h1 class="card-text">${dadosProdutos.preco}</h1>
-                    <a href="#" class="btn btn-primary btn-lg" onclick="carrinho.addProduto(${dadosProdutos.id})">Adicionar ao carrinho</a>
-                    <a href="contato.html" class="btn btn-secondary btn-lg">Entre em contato</a>
+                    <button href="#" class="btn btn-primary btn-lg" onclick="carrinho.addProduto(${dadosProdutos.id})">Adicionar ao carrinho</button>
+                    <button href="contato.html" class="btn btn-secondary btn-lg">Entre em contato</button>
                 </div>
             </div>
     `;
@@ -89,8 +88,9 @@ function criaCatalogoHTML(dadosProdutos){
 function criaCarrinhoOffcanvasHTML(produto){
     let newRow = document.createElement('div');
     newRow.classList.add("row");
+    newRow.id = "produtoCarrinho_"+produto.id
 
-    newRow.innerHTML =  `<div class="accordion col-9" id="accordion_${produto.id}">
+    newRow.innerHTML =  `<div class="accordion col-9">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading_${produto.id}">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${produto.id}"
@@ -106,18 +106,16 @@ function criaCarrinhoOffcanvasHTML(produto){
                     </div>
                 </div>
                 </div>
-                <div class="teste col-3"><button class="w-50" onclick="carrinho.addProduto(${produto.id})">+</button><button class="w-50">-</button><span><input type="text" name="quant[1]" class="form-control input-number"value="${produto.quantidade}" min="1" max="10" disabled ></span></div>
+                <div class="teste col-3"><button class="w-50" onclick="carrinho.addProduto(${produto.id})">+</button><button onclick="carrinho.removeProduto(${produto.id})" class="w-50">-</button><span><input type="text" name="quant[1]" class="form-control input-number" id = "carrinhoCont_${produto.id}"value="${produto.quantidade}" min="1" max="10" disabled ></span></div>
             </div>`;
     carrinhoProdutos.appendChild(newRow);
-}
-function atualizaBotoesOffcanvasHTML(){
-
 }
 class Carrinho{
     constructor(){
         //array de produtoCarrinho
         this.HTMLimgCarrinho=document.getElementById('imagemCarrinho');
         this.HTMLcarrinhoQTD= document.getElementById('carrinhoContador');
+        this.HTMLcarrinhoSubtotal = document.getElementById('carrinho_subtotal')
         this.produto = [];
         this.is_empty = true;
     } 
@@ -141,7 +139,7 @@ class Carrinho{
     }
     addProduto(id){
         this.is_empty= false;
-        //condicional para verificar se o produto já existe no carrinho, se já existir só atualiza a quantidade, caso nao exista adiciona cria um novo objeto e adiciona na lista
+        //condicional para verificar se o produto já existe no carrinho, se já existir só atualiza a quantidade, caso nao exista cria um novo objeto e adiciona na lista
         if(this.verificaProdutoExisteCarrinho(id))
         {
             //esse loop é só para pegar o index do produto e atualizar a quantidade do objeto, da pra melhorar isso aqui, talvez retornando o index na funcão acima
@@ -150,10 +148,10 @@ class Carrinho{
                 if(this.produto[k].id == id)
                 {
                 this.produto[k].atualizaQuantidade('+');
+                document.getElementById('carrinhoCont_'+this.produto[k].id).value = this.produto[k].quantidade;
                 }
             }
         }
-        
         else 
         {//loop para achar o item na lista global
             for(let k=0; k<lista_produtos.dados.length;k++)
@@ -165,8 +163,9 @@ class Carrinho{
                     this.produto.push(prod);
                     criaCarrinhoOffcanvasHTML(prod)
                 }
-            }    
+            }  
         }
+        this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
         this.atualizaIconeCarrinho();
     }
     atualizaIconeCarrinho(){
@@ -181,15 +180,31 @@ class Carrinho{
         }
     }
     removeProduto(id){
-        return
+        for(let k=0; k<this.produto.length;k++)
+            {
+                if(this.produto[k].id == id)
+                {
+                this.produto[k].atualizaQuantidade('-');
+                document.getElementById('carrinhoCont_'+this.produto[k].id).value = this.produto[k].quantidade;
+                    if(this.produto[k].quantidade == 0){
+                        document.getElementById('produtoCarrinho_'+this.produto[k].id).remove();
+                        this.produto.splice(k, 1);
+                    }
+                }
+            }
+        if(this.getCarrinhoQuantidade()==0){
+            this.is_empty=true;
+        }
+        this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})
+        this.atualizaIconeCarrinho();
     }
     getSubtotalCarrinho(){
         let total = 0
         for (let k=0; k<this.produto.length;k++){
-            let preco = this.produto[k].preco.split('R$')[1];
-            total += this.produto[k].quantidade*parseFloat(preco)
+            let preco = this.produto[k].preco.split('R$')[1].split('.').join('').split(',').join('.');
+            total += this.produto[k].quantidade*parseFloat(preco);  
         }
-        return (total);
+        return (total)
     }
     limparCarrinho(){
         this.produto =[]
@@ -198,6 +213,7 @@ class Carrinho{
         while (carrinhoProdutos.firstChild) {
             carrinhoProdutos.removeChild(carrinhoProdutos.lastChild);
           }
+        this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
     }
 }
 class ProdutoCarrinho{
