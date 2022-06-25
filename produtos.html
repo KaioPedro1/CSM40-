@@ -44,19 +44,19 @@
       <li><a href="login.html">Login</a></li>
     </ul>
   </nav>
-  <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
-  <div class="fixed-bottom">
-    <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-      <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
-      <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
-        0
-      </span>
-    </button>
-  </div>
+     <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
+        <div class="fixed-bottom">
+          <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+            <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
+            <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
+              0
+            </span>
+          </button>
+        </div>
   <!--OFFCANVAS CARRINHO-->
   <aside>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-      <div class="offcanvas-header">
+    <div class="offcanvas offcanvas-end w-25" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">
           <h1>Carrinho</h1>
           <hr>
@@ -67,37 +67,6 @@
         <div class="container h-75" id = "carrinhoProdutos" style=" overflow: scroll;">
         
       </div>
-        <!--<div style="height: 60vh; overflow: auto;">
-          <ol class="list-group list-group-numbered">
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">Chevrolet Onix Plus</div>
-                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
-              </div>
-              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">Chevrolet Onix Plus</div>
-                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
-              </div>
-              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
-            </li>   
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">Chevrolet Onix Plus</div>
-                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
-              </div>
-              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
-            </li>   
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div class="ms-2 me-auto">
-                <div class="fw-bold">Chevrolet Onix Plus</div>
-                Content for list item Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit temporibus quam magni maiores, voluptatib Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium nulla consequuntur autem consectetur aut atque voluptatum omnis obcaecati cupiditate dicta natus necessitatibus hic placeat in distinctio nemo, et nostrum velit.
-              </div>
-              <span class="badge bg-primary rounded-pill">R$ 150.000</span>
-            </li> 
-          </ol>-->
           
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
@@ -120,15 +89,21 @@
     <div class="row"> 
       <!--FILTRO LATERAL ESQUERDA-->
       <div class="col-2">
-        <p>Filtros</p>
-        <ul>
-          <li><a>Chevrolet</a></li>
-          <li><a>Fiat</a></li>
-          <li><a>Hyundai</a></li>
-          <li><a>Volkswagen</a></li>
-          <li><a>Toyota</a></li>
-        </ul>
-      </div>
+        <div class="sticky-top d-flex align-items-start flex-column">
+          <div class="titulo_filtro p-3 border-bottom w-100">
+            <h1>Filtros</h1>
+          </div>
+          <div class="p-2 w-100 border-bottom">
+            <h4 >Categorias</h4>
+            <div class="list-group" id = "filtro_categorias"></div>
+          </div>
+
+          <div class="p-2 w-100 border-bottom">
+            <h4>Marcas</h4>
+            <div class="list-group" id = "filtro_marcas"></div>
+          </div>
+        </div>
+    </div>
       <!--SECAO PRINCIPAL COM OS PRODUTOS INSERIDOS VIA JS-->
       <section id="produtos" class="card mb-3 col-10"></section>
 

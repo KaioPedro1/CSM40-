@@ -10,7 +10,7 @@ var lista_produtos
 var lista_categorias
 var categoria_hash_map = new Map()
 var carrinho;
-
+ 
 /* treinando async, await, fetch e promise, aqui é a mesma coisa que utilizar o XMLhttpRequest*/
 async function getData(){
     carrinho = new Carrinho();
@@ -20,17 +20,18 @@ async function getData(){
     let responseCategoria = await fetch(listar_categoria_URL);
     lista_categorias = await responseCategoria.json();
 
-        for(let k=0; k<lista_categorias.dados.length;k++){
-            categoria_hash_map.set(lista_categorias.dados[k].id, lista_categorias.dados[k].nome)
-            }
+    for(let k=0; k<lista_categorias.dados.length;k++){
+        categoria_hash_map.set(lista_categorias.dados[k].id, lista_categorias.dados[k].nome)
+        }
 };
-/*NÃO ESTOU CHAMANDO EVENTO NENHUM POR HTML, O INICIO DO SCRIPT COMECA NESSE EVENTO */
+/*NÃO ESTOU CHAMANDO EVENTO NENHUM POR HTML, O INICIO DO SCRIPT COMECA NESTE EVENTO */
 document.addEventListener("DOMContentLoaded", async () =>{
         await getData();
         tratamentoProdutos();
         for(let k=0; k<lista_produtos.dados.length;k++){
             criaCatalogoHTML(lista_produtos.dados[k])
         }
+        criaFiltrosHTML();
 })
 
 function tratamentoProdutos(){
@@ -50,7 +51,7 @@ function criaCatalogoHTML(dadosProdutos){
     newSection.addEventListener('dblclick',()=>{carrinho.addProduto(dadosProdutos.id)})
     newSection.innerHTML= `
             <div class="col-md-3">
-                <img id = "img_${dadosProdutos.id}"src="https://www.webmotors.com.br/imagens/prod/348146/CHEVROLET_ONIX_1.0_FLEX_MANUAL_34814611043340082.png?s=fill&w=440&h=330&q=80&t=true" class="figure img-fluid rounded-start">
+                <img id = "img_${dadosProdutos.id}"src="imagens/veiculos/undefined.png" class="figure img-fluid rounded-start">
             </div>
             <div class="col-md-6">
                     <div class="card-body">
@@ -95,7 +96,7 @@ function criaCarrinhoOffcanvasHTML(produto){
                     <h2 class="accordion-header" id="heading_${produto.id}">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${produto.id}"
                          aria-expanded="false"  aria-controls="collapse_${produto.id}">
-                        ${produto.nome} <span class="badge bg-primary rounded-pill">${produto.preco}</span>
+                         <strong>${produto.nome}</strong> <span class="badge bg-primary rounded-pill" id= "valor_carrinho_unitario_${produto.id}">${produto.preco}</span>
                     </button>
                     </h2>
                     <div id="collapse_${produto.id}" class="accordion-collapse collapse" aria-labelledby="heading_${produto.id}"
@@ -106,9 +107,94 @@ function criaCarrinhoOffcanvasHTML(produto){
                     </div>
                 </div>
                 </div>
-                <div class="teste col-3"><button class="w-50" onclick="carrinho.addProduto(${produto.id})">+</button><button onclick="carrinho.removeProduto(${produto.id})" class="w-50">-</button><span><input type="text" name="quant[1]" class="form-control input-number" id = "carrinhoCont_${produto.id}"value="${produto.quantidade}" min="1" max="10" disabled ></span></div>
+                <div class="teste col-3"><button class="w-50" onclick="carrinho.addProduto(${produto.id})">+</button><button onclick="carrinho.removeProduto(${produto.id})" class="w-50">-</button><span><input type="text" name="quant[1]" class="form-control input-number" id = "carrinhoCont_${produto.id}"value="${produto.quantidade}" min="1" max="10" disabled style="text-align: center;"></span></div>
             </div>`;
     carrinhoProdutos.appendChild(newRow);
+}
+function criaFiltrosHTML(flag){
+    const filtroCategorias =  document.getElementById('filtro_categorias');
+    const filtroMarcas = document.getElementById('filtro_marcas');
+    //gambiarra pra ver se precisa preencher os dois filtros ou somente o de marcas, só é chamado quando nenhuma categoria for selecionada
+    if(flag){   
+        let marcas = []
+        for(let k=0; k<lista_produtos.dados.length;k++)
+        {   
+            t=lista_produtos.dados[k].descricao.split(',')[0]
+            //verifica se existe no array
+            if(marcas.indexOf(t)==-1){
+                marcas.push(t);
+            }
+        }
+        for(let k=0; k<marcas.length; k++){
+            let newLabel = document.createElement('label');
+            newLabel.classList.add("list-group-item");  
+            newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${marcas[k]}">
+            ${marcas[k]}`;
+            filtroMarcas.appendChild(newLabel);
+        }
+     return;   
+    }
+    for(let k=0; k<lista_categorias.dados.length;k++){
+        let newLabel = document.createElement('label');
+        newLabel.classList.add("list-group-item");
+        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" onclick="atualizaCatalogoPorFiltroSelecionado()" value="${lista_categorias.dados[k].nome}">
+        ${lista_categorias.dados[k].nome}`; 
+        filtroCategorias.appendChild(newLabel);
+    }
+    //como nao existe uma coluna no banco de dados para marcas, então tem que pegar primeiro aqui
+    let marcas = []
+    for(let k=0; k<lista_produtos.dados.length;k++)
+    {   
+        t=lista_produtos.dados[k].descricao.split(',')[0]
+        //verifica se existe no array
+        if(marcas.indexOf(t)==-1){
+            marcas.push(t);
+        }
+    }
+    for(let k=0; k<marcas.length; k++){
+        let newLabel = document.createElement('label');
+        newLabel.classList.add("list-group-item");  
+        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${marcas[k]}">
+        ${marcas[k]}`;
+        filtroMarcas.appendChild(newLabel);
+    } 
+}
+function atualizaCatalogoPorFiltroSelecionado(){
+    const filtroCategorias =  document.getElementById('filtro_categorias');
+    const filtroMarcas = document.getElementById('filtro_marcas');
+    let flag_filtro_vazio = true;
+
+    while (filtroMarcas.firstChild) {
+        filtroMarcas.removeChild(filtroMarcas.lastChild);
+    }
+
+    //tudo isso aqui só para mudar o campo de filtro marca de acordo com a seleção de categoria
+    for(let k=0; k<filtroCategorias.children.length; k++){
+        if(filtroCategorias.children[k].children[0].checked){
+            flag_filtro_vazio= false;
+            for(j=0; j<lista_produtos.dados.length;j++){
+                if(lista_produtos.dados[j].categoria==filtroCategorias.children[k].children[0].value && !verificaFiltroMarcaExiste(lista_produtos.dados[j].descricao.split(',')[0])){
+                    let newLabel = document.createElement('label');
+                    newLabel.classList.add("list-group-item");  
+                    newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${lista_produtos.dados[j].descricao.split(',')[0]}">
+                    ${lista_produtos.dados[j].descricao.split(',')[0]}`;
+                    filtroMarcas.appendChild(newLabel);
+                }
+            }    
+        }
+    }
+    if(flag_filtro_vazio){
+        criaFiltrosHTML(flag_filtro_vazio);
+    }
+}
+function verificaFiltroMarcaExiste(cat){
+    const filtroMarcas = document.getElementById('filtro_marcas');
+    for (let index = 0; index < filtroMarcas.children.length; index++) {
+        if(filtroMarcas.children[index].children[0].value==cat){
+            return true;
+        }
+    }
+    return false;
 }
 class Carrinho{
     constructor(){
@@ -148,6 +234,8 @@ class Carrinho{
                 if(this.produto[k].id == id)
                 {
                 this.produto[k].atualizaQuantidade('+');
+                //fiquei com preguiça de criar uma funcao para atualizar esses valores 
+                document.getElementById('valor_carrinho_unitario_'+this.produto[k].id).innerText = this.produto[k].getPrecoTotal().toLocaleString('pt-br', {style:'currency', currency:'BRL'});
                 document.getElementById('carrinhoCont_'+this.produto[k].id).value = this.produto[k].quantidade;
                 }
             }
@@ -166,6 +254,7 @@ class Carrinho{
             }  
         }
         this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
+
         this.atualizaIconeCarrinho();
     }
     atualizaIconeCarrinho(){
@@ -185,7 +274,9 @@ class Carrinho{
                 if(this.produto[k].id == id)
                 {
                 this.produto[k].atualizaQuantidade('-');
+                //fiquei com preguiça de criar uma funcao para atualizar esses valores 
                 document.getElementById('carrinhoCont_'+this.produto[k].id).value = this.produto[k].quantidade;
+                document.getElementById('valor_carrinho_unitario_'+this.produto[k].id).innerText = this.produto[k].getPrecoTotal().toLocaleString('pt-br', {style:'currency', currency:'BRL'});
                     if(this.produto[k].quantidade == 0){
                         document.getElementById('produtoCarrinho_'+this.produto[k].id).remove();
                         this.produto.splice(k, 1);
@@ -240,4 +331,8 @@ class ProdutoCarrinho{
             console.log("ERRO: QUANTIDADE NÃO PODE SER MENOR QUE 0");
         }
     }
-}
+    getPrecoTotal(){
+        let preco = this.preco.split('R$')[1].split('.').join('').split(',').join('.');
+        return (this.quantidade*preco);
+    }
+} 
