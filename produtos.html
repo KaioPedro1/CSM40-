@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="produtos.js" defer></script>
+  <script src="js/produtos.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
@@ -46,7 +46,7 @@
   </nav>
      <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
         <div class="fixed-bottom">
-          <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+          <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" ondragover="allowdrop(event)" ondrop="drop(event)">
             <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
             <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
               0
@@ -68,7 +68,7 @@
         
       </div>
           
-        <footer class="position-absolute bottom-0" style="width: 95%; height: 20%;">
+        <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
             <div id = "containerSubtotal">
               <h5>Subtotal:<span class="badge text-bg-light" id="carrinho_subtotal">R$:0</span>

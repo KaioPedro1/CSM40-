@@ -42,16 +42,20 @@ function tratamentoProdutos(){
         lista_produtos.dados[k].preco = parseInt(lista_produtos.dados[k].preco).toLocaleString('pt-br', formato)
     }
 }
+//funcão chamada no carregamento da pagina
 function criaCatalogoHTML(dadosProdutos){
     let newSection = document.createElement('section');
     newSection.classList.add("produto");
     newSection.classList.add("row");
     newSection.classList.add("g-0");
     newSection.id=dadosProdutos.id;
+    newSection.setAttribute('draggable', true);
+    newSection.setAttribute('ondragstart', 'drag(event)');
+    newSection.style.setProperty('margin-bottom', '0.5%');
     newSection.addEventListener('dblclick',()=>{carrinho.addProduto(dadosProdutos.id)})
     newSection.innerHTML= `
             <div class="col-md-3">
-                <img id = "img_${dadosProdutos.id}"src="imagens/veiculos/undefined.png" class="figure img-fluid rounded-start">
+                <img id = "img_${dadosProdutos.id}"src="imagens/veiculos/undefined.png" class="figure img-fluid rounded-start" draggable="false">
             </div>
             <div class="col-md-6">
                     <div class="card-body">
@@ -111,34 +115,28 @@ function criaCarrinhoOffcanvasHTML(produto){
             </div>`;
     carrinhoProdutos.appendChild(newRow);
 }
-function criaFiltrosHTML(flag){
+function drag(event){
+    event.dataTransfer.setData('text', event.target.id);
+}
+function allowdrop(event){
+    event.preventDefault();
+}
+function drop(event){
+    event.preventDefault();
+    var data = event.dataTransfer.getData('text');
+    carrinho.addProduto(data);
+}
+//funcão chamada no carregamento da pagina, cria todos os filtros sem a flag e com flag só cria as marcas
+function criaFiltrosHTML(){
     const filtroCategorias =  document.getElementById('filtro_categorias');
     const filtroMarcas = document.getElementById('filtro_marcas');
-    //gambiarra pra ver se precisa preencher os dois filtros ou somente o de marcas, só é chamado quando nenhuma categoria for selecionada
-    if(flag){   
-        let marcas = []
-        for(let k=0; k<lista_produtos.dados.length;k++)
-        {   
-            t=lista_produtos.dados[k].descricao.split(',')[0]
-            //verifica se existe no array
-            if(marcas.indexOf(t)==-1){
-                marcas.push(t);
-            }
-        }
-        for(let k=0; k<marcas.length; k++){
-            let newLabel = document.createElement('label');
-            newLabel.classList.add("list-group-item");  
-            newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${marcas[k]}">
-            ${marcas[k]}`;
-            filtroMarcas.appendChild(newLabel);
-        }
-     return;   
-    }
+    
     for(let k=0; k<lista_categorias.dados.length;k++){
         let newLabel = document.createElement('label');
         newLabel.classList.add("list-group-item");
-        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" onclick="atualizaCatalogoPorFiltroSelecionado()" value="${lista_categorias.dados[k].nome}">
-        ${lista_categorias.dados[k].nome}`; 
+        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox"onclick="atualizaCatalogoPorFiltroSelecionado()" value="${lista_categorias.dados[k].nome}">
+        ${lista_categorias.dados[k].nome}`;
+   
         filtroCategorias.appendChild(newLabel);
     }
     //como nao existe uma coluna no banco de dados para marcas, então tem que pegar primeiro aqui
@@ -154,7 +152,7 @@ function criaFiltrosHTML(flag){
     for(let k=0; k<marcas.length; k++){
         let newLabel = document.createElement('label');
         newLabel.classList.add("list-group-item");  
-        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${marcas[k]}">
+        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox"  onclick="atualizaCatalogoPorFiltroSelecionado()"value="${marcas[k]}">
         ${marcas[k]}`;
         filtroMarcas.appendChild(newLabel);
     } 
@@ -162,30 +160,90 @@ function criaFiltrosHTML(flag){
 function atualizaCatalogoPorFiltroSelecionado(){
     const filtroCategorias =  document.getElementById('filtro_categorias');
     const filtroMarcas = document.getElementById('filtro_marcas');
-    let flag_filtro_vazio = true;
-
-    while (filtroMarcas.firstChild) {
-        filtroMarcas.removeChild(filtroMarcas.lastChild);
+    var arrayCategoriaChecked = verificaFiltroChecked('filtro_categorias');
+    var arrayMarcasChecked = verificaFiltroChecked('filtro_marcas');
+    let flag_nenhum_filtro=false;
+   
+    while(produtosDivID.firstChild)
+    {
+    produtosDivID.removeChild(produtosDivID.lastChild);
     }
 
-    //tudo isso aqui só para mudar o campo de filtro marca de acordo com a seleção de categoria
-    for(let k=0; k<filtroCategorias.children.length; k++){
-        if(filtroCategorias.children[k].children[0].checked){
-            flag_filtro_vazio= false;
-            for(j=0; j<lista_produtos.dados.length;j++){
-                if(lista_produtos.dados[j].categoria==filtroCategorias.children[k].children[0].value && !verificaFiltroMarcaExiste(lista_produtos.dados[j].descricao.split(',')[0])){
-                    let newLabel = document.createElement('label');
-                    newLabel.classList.add("list-group-item");  
-                    newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" value="${lista_produtos.dados[j].descricao.split(',')[0]}">
-                    ${lista_produtos.dados[j].descricao.split(',')[0]}`;
-                    filtroMarcas.appendChild(newLabel);
-                }
-            }    
+    if(arrayMarcasChecked.length==0){
+        while (filtroMarcas.firstChild) 
+        {
+        filtroMarcas.removeChild(filtroMarcas.lastChild);
         }
     }
-    if(flag_filtro_vazio){
-        criaFiltrosHTML(flag_filtro_vazio);
+    if(arrayCategoriaChecked.length==0){
+        while(filtroCategorias.firstChild)
+        {
+            filtroCategorias.removeChild(filtroCategorias.lastChild);
+        }
     }
+
+
+    for(let j=0; j<lista_produtos.dados.length;j++){
+        if(arrayCategoriaChecked.length==0 && arrayMarcasChecked.length==0)
+        {   
+            flag_nenhum_filtro=true;
+            criaCatalogoHTML(lista_produtos.dados[j])
+        }
+        else if (arrayCategoriaChecked.length==0 || arrayMarcasChecked.length==0){
+            for (let k =0 ;k<arrayCategoriaChecked.length; k++){
+                if(lista_produtos.dados[j].categoria==arrayCategoriaChecked[k]){
+                    criaCatalogoHTML(lista_produtos.dados[j])
+                    if(!verificaFiltroMarcaExiste(lista_produtos.dados[j].descricao.split(',')[0], 'filtro_marcas'))
+                    {
+                        let newLabel = document.createElement('label');
+                        newLabel.classList.add("list-group-item");  
+                        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" onclick="atualizaCatalogoPorFiltroSelecionado()" value="${lista_produtos.dados[j].descricao.split(',')[0]}">
+                        ${lista_produtos.dados[j].descricao.split(',')[0]}`;
+                        filtroMarcas.appendChild(newLabel);
+                    }
+                }
+            }
+            for (let k =0 ;k<arrayMarcasChecked.length; k++){
+                if(lista_produtos.dados[j].descricao.split(',')[0]==arrayMarcasChecked[k]){
+                    criaCatalogoHTML(lista_produtos.dados[j]);
+                    if(!verificaFiltroMarcaExiste(lista_produtos.dados[j].categoria, 'filtro_categorias'))
+                    {
+                        let newLabel = document.createElement('label');
+                        newLabel.classList.add("list-group-item");  
+                        newLabel.innerHTML =  `<input class="form-check-input me-1" type="checkbox" onclick="atualizaCatalogoPorFiltroSelecionado()" value="${lista_produtos.dados[j].categoria}">
+                        ${lista_produtos.dados[j].categoria}`;
+                        filtroCategorias.appendChild(newLabel);
+                    }
+                }
+            }
+        }
+        else{
+            for(let i = 0; i<arrayMarcasChecked.length; i++){
+                for(let k = 0; k<arrayCategoriaChecked.length; k++)
+                {
+                    if(lista_produtos.dados[j].categoria==arrayCategoriaChecked[k] && lista_produtos.dados[j].descricao.split(',')[0]==arrayMarcasChecked[i]){
+                    criaCatalogoHTML(lista_produtos.dados[j]);
+                    }
+                }
+            }
+        }
+        
+    }
+    if(flag_nenhum_filtro){
+        criaFiltrosHTML();
+    }
+}
+function verificaFiltroChecked(filtro){
+    const filtroHTML = document.getElementById(filtro);
+    var arr = []
+    for(let k=0; k<filtroHTML.children.length; k++)
+    {
+        if(filtroHTML.children[k].children[0].checked)
+        {
+           arr.push(filtroHTML.children[k].children[0].value);
+        }
+    }
+    return arr;
 }
 function verificaFiltroMarcaExiste(cat){
     const filtroMarcas = document.getElementById('filtro_marcas');
