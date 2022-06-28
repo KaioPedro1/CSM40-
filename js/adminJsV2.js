@@ -5,7 +5,7 @@ const loja_categoria_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria
 const loja_produto_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=listar"
 const loja_remover_prod_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=remover&id="
 const loja_remover_cate_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=remover&id="
-/*existe uma maneira correta de buscar pela api,  que é importando a biblioteca e instanciando uma classe do google search, mas não consegui e vai ser pela url mesmo. O "cx é a chave da search engine que é gerada pelo google clouds e a key é a chave da api também gerada vinculada com a conta google"*/
+/*existe uma maneira correta de buscar pela api,  que é importando a biblioteca e instanciando uma classe do google search, mas não consegui e vai ser pela url mesmo. O "cx é a chave da search engine que é gerada pelo google cloud e a key é a chave da api também gerada vinculada com a conta google"*/
 const googleSearchURL = "https://customsearch.googleapis.com/customsearch/v1?cx=57045d6ec622c4289&searchType=image&key=AIzaSyB8XoAfOHeb5aS4odsWv9yTFvc9S0GadAE&num=1&q="
 
 
@@ -52,6 +52,12 @@ document.addEventListener("DOMContentLoaded", ()=>
     formProdutos.addEventListener("submit",function(event){
         event.preventDefault();
         adicionarProduto(event);
+    },false);
+
+    let formAlterarProdutos = document.getElementById('modal_produtos_alterar');
+    formAlterarProdutos.addEventListener("submit",function(event){
+        event.preventDefault();
+        alterarProduto(event);
     },false);
 
     let selecaoNome = document.getElementById('selectNomeFipe');
@@ -116,30 +122,20 @@ function drawCategoriaChart(){
        lista_categoria.dados[k].id, btnRemover+btnAlterar]);
     }
     let dadosTabela=google.visualization.arrayToDataTable(dados);
-    google.visualization.events.addListener(tabela, 'select', function(){
-        selectHandler(tabela);
-    })
-
     tabela.setDataTable(dadosTabela);
-    function selectHandler(table) {
-        teste= table.getDataTable();
-        var selection = table.getChart().getSelection();
-        if(selection.length === 0)
-            return;
-        var e = event || window.event;
-        var cell = e.target; //get selected cell
-        if(cell.cellIndex-1 != 0)
-            return;
-        
-        teste.setValue(selection[0].row,cell.cellIndex-1,"vidaida")
-        table.setDataTable(teste);
-        table.draw();
-    }
     tabela.draw();
 }
   
 function criaBotao(value, name, id, funcName){
-    return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"/>`
+    if(funcName=='alterarCategoria'){
+        return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"data-bs-toggle="modal" data-bs-target="#modal_categoria"/>`
+    }
+    else if(funcName=='alterarProduto'){
+        return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="genericaPreencheSelection('produto_input_categoria', lista_categoria.dados); preencheFormAlterarProduto(this.id)" data-bs-toggle="modal" data-bs-target="#modal_produtos_alterar"/>`
+    }
+    else{
+        return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"/>`
+    }
 }
 function tratamentoProdutos(dados2){
     var formato = { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL', maximumFractionDigits: 3 }
@@ -188,23 +184,76 @@ function atualizaLista(tipo){
         fetch(loja_produto_URL).then(res => res.json()).then(data=>{lista_produtos=data, drawProdutoChart()})
     }
 }
-function alterarCategoria(intID, tipo){
-    console.log('teste', intID, tipo)
+function alterarCategoria(intID){
+    document.getElementById('exampleModalLabel').innerText='Alterar categoria '+intID;
+    document.getElementById('categoria_btn_enviar').innerText='Alterar';
+    document.getElementById('categoria_input_nome').value = categoria_hash_map.get(intID);
+}
+function alterarProduto(e){
+    e.preventDefault();
+    let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=alterar";
+    let temp = Array.from(e.target.elements);
+    var obj_backEnd = new dadosBackend(temp, document.getElementById('modal_alterar_produtos').innerText.split(' ')[2]);
+    Object.entries(obj_backEnd).forEach(([key, value]) => 
+    {
+            varURL= varURL.concat('&'+key+'='+value);   
+    });
+    let requestXML = new XMLHttpRequest();
+    requestXML.open('POST', varURL);
+    requestXML.responseType='json';
+    requestXML.send();
+    requestXML.onload=function()
+    {
+        
+        for(let k = 0; k<lista_produtos.dados.length;k++){
+         
+            if(lista_produtos.dados[k].id == obj_backEnd.id){
+                lista_produtos.dados[k]=obj_backEnd;
+                drawProdutoChart();
+            }
+        }
+        
+    }
 }
 function adicionarCategoria(e){
     e.preventDefault();
-    let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=inserir&nome=";
-    let temp = e.target.elements;
-    varURL+=temp[0].value;
-    let request = new XMLHttpRequest();
-    request.open('POST', varURL);
-    request.responseType='json';
-    request.send();
-    request.onload=function(){
-        /*só adiciona o objeto a lista, não faz outra requisição xml */
-        lista_categoria.dados.push({id:request.response.dados.id, nome: temp[0].value})
-        drawCategoriaChart();
+    if(document.getElementById('categoria_btn_enviar').innerText=='Alterar'){
+        let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=alterar&id="+document.getElementById('exampleModalLabel').innerText.split(' ')[2]+'&nome=';
+        let temp = e.target.elements;
+        varURL+=temp[0].value;
+        let request = new XMLHttpRequest();
+        request.open('POST', varURL);
+        request.responseType='json';
+        request.send();
+        request.onload=function(){
+            /*só adiciona o objeto a lista, não faz outra requisição xml */
+            for(let k=0; k<lista_categoria.dados.length; k++)
+            {
+                if(categoria_hash_map.get(document.getElementById('exampleModalLabel').innerText.split(' ')[2])==lista_categoria.dados[k].nome){
+                    lista_categoria.dados[k].nome=temp[0].value;
+                }
+            }
+            drawCategoriaChart();
+        }
     }
+    else{
+        let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=inserir&nome=";
+        let temp = e.target.elements;
+        varURL+=temp[0].value;
+        let request = new XMLHttpRequest();
+        request.open('POST', varURL);
+        request.responseType='json';
+        request.send();
+        request.onload=function(){
+            /*só adiciona o objeto a lista, não faz outra requisição xml */
+            lista_categoria.dados.push({id:request.response.dados.id, nome: temp[0].value})
+            for(let k=0; k<lista_categoria.dados.length;k++){
+                categoria_hash_map.set(lista_categoria.dados[k].id, lista_categoria.dados[k].nome)
+                }
+            drawCategoriaChart();
+        }
+    }
+  
 
     
 }
@@ -214,7 +263,6 @@ function adicionarProduto(e)
     let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=inserir";
     let temp = Array.from(e.target.elements);
     var obj_backEnd = new dadosBackend(temp);
-    console.log(obj_backEnd.imagem, obj_backEnd.nome)
     Object.entries(obj_backEnd).forEach(([key, value]) => 
     {
         if(key!='id' && key!='imagem')
@@ -242,8 +290,6 @@ function adicionarProduto(e)
     else
     {   obj_backEnd.imagem = 'imagens/veiculos/'+obj_backEnd.imagem;
         varURL= varURL.concat('&imagem'+'='+obj_backEnd.imagem); 
-        
-        console.log(varURL)
         let request = new XMLHttpRequest();
         request.open('POST', varURL);
         request.responseType='json';
@@ -258,9 +304,33 @@ function adicionarProduto(e)
 }
     
 
-
+function preencheFormAlterarProduto(id){
+    document.getElementById('modal_alterar_produtos').innerText='Alterar produto '+id
+    for(let k = 0; k<lista_produtos.dados.length; k++){
+        if(lista_produtos.dados[k].id==id){
+            document.getElementById('produto_input_marca').value = lista_produtos.dados[k].descricao.split(',')[0];
+            document.getElementById('produto_input_nome').value = lista_produtos.dados[k].nome;
+            document.getElementById('produto_input_ano').value = lista_produtos.dados[k].descricao.split(',')[1].split(': ')[1]+' '+ lista_produtos.dados[k].descricao.split(',')[2].split(': ')[1];
+            document.getElementById('produto_input_preco').value = lista_produtos.dados[k].preco;
+            document.getElementById('produto_input_categoria').value = lista_produtos.dados[k].categoria;
+            document.getElementById('produto_input_codigo').value = lista_produtos.dados[k].codigo;
+            document.getElementById('produto_input_peso').value = lista_produtos.dados[k].peso;
+            document.getElementById('produto_input_imagem').value = lista_produtos.dados[k].imagem;
+            var tempDesc=','
+            for(let j = 3; j<lista_produtos.dados[k].descricao.split(',').length-1; j++){
+        
+                tempDesc+=lista_produtos.dados[k].descricao.split(',')[j]+',';
+            }
+            document.getElementById('produto_input_descricao').value = tempDesc;
+            return
+        }
+         
+    }
+   
+}
 function genericaPreencheSelection(htmlID,lista,func){
     let selecao = document.getElementById(htmlID);
+
     while (selecao.firstChild) {
         selecao.firstChild.remove();
     }
@@ -355,7 +425,22 @@ function preencheCampoPreco(e){
 }
 //teste
 class dadosBackend{
-    constructor(arrayForm){
+    constructor(arrayForm, alterarID){
+        if(alterarID){
+        this.id=alterarID;
+        this.codigo=arrayForm[5].value;
+        this.categoria=arrayForm[4].value;
+        this.nome=arrayForm[1].value;
+        //usei o objeto global ao invés do formulario, pode dar problema
+        this.descricao=arrayForm[0].value+", Ano modelo: "+arrayForm[2].value.split(' ')[0]+ ", Combustível: "+arrayForm[2].value.split(' ')[1]+", "+arrayForm[9].value;
+         //todo
+        this.preco=parseFloat(arrayForm[3].value);
+        this.imagem = arrayForm[7].value
+        //
+        this.peso=arrayForm[6].value;
+        }
+        else
+        {
         this.id=null;
         this.codigo=arrayForm[5].value;
         this.categoria=arrayForm[4].value;
@@ -367,5 +452,6 @@ class dadosBackend{
         this.imagem = arrayForm[7].value.split('\\')[2]
         //
         this.peso=arrayForm[6].value;
+        }
     }
 }
