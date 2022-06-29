@@ -14,7 +14,6 @@ var lista_categorias
 var categoria_hash_map = new Map()
 var carrinho;
 var dadosCliente = [];
-var idPedido;
 
 /* treinando async, await, fetch e promise, aqui é a mesa ideia que utilizar o XMLhttpRequest*/
 async function getData(){
@@ -410,21 +409,24 @@ function buscarCep() {
     request.responseType = 'json';
     request.send();
     request.onload = function() {
-        console.log(carrinho.HTMLcarrinhoSubtotal);
         dadosCliente.push(request.response);
+        console.log(dadosCliente);
         rua.value = dadosCliente[0].logradouro;
         bairro.value = dadosCliente[0].bairro;
         cidade.value = dadosCliente[0].localidade;
         uf.value = dadosCliente[0].uf;
-        nomeInput = document.getElementById("nome").value
-        cpfInput = document.getElementById("cpf").value
-        var dadosC = [{nome: nomeInput}, {cpf: cpfInput}];
-        dadosCliente.push(dadosC);
-        numInput = document.getElementById("numero").value
-        complInput = document.getElementById("complemento").value
-        var dadosCCompl = [{numero: numInput}, {complemento: complInput}];
-        dadosCliente.push(dadosCCompl);
-  };
+    };
+}
+
+/* Coloca informações do input do formulario em dadosCliente */
+function armazenaDadosForms(){
+    nomeInput = document.getElementById("nome").value
+    cpfInput = document.getElementById("cpf").value
+    dadosCliente.push({nome: nomeInput, cpf: cpfInput});
+    console.log(dadosCliente);
+    numInput = document.getElementById("numero").value
+    complInput = document.getElementById("complemento").value
+    dadosCliente.push({numero: numInput, complemento: complInput});
 }
 
 /* Envia a requisicao para o backend */
@@ -453,7 +455,7 @@ function enviaRequisicao(){
 
 /* Mostra resumo dados do cliente e pedido */
 function resumoDadosEPedidos(){
-    console.log(carrinho.produto);
+    console.log(dadosCliente);
     /* Info do pedido */
     for (var i = 0; i < carrinho.produto.length; i++){
         const texto1 = document.createTextNode(" " + carrinho.produto[i].nome + "; ");
@@ -473,11 +475,11 @@ function resumoDadosEPedidos(){
         tag4.appendChild(texto4);
     }
     /* info do cliente */
-    const texto5 = document.createTextNode(" " + dadosCliente[1][0].nome);
+    const texto5 = document.createTextNode(" " + dadosCliente[1].nome);
     const tag5 = document.getElementById('infoNomeCliente');
     tag5.appendChild(texto5);
 
-    const texto6 = document.createTextNode(" " + dadosCliente[1][1].cpf);
+    const texto6 = document.createTextNode(" " + dadosCliente[1].cpf);
     const tag6 = document.getElementById('infoCPF');
     tag6.appendChild(texto6);
 
@@ -489,7 +491,7 @@ function resumoDadosEPedidos(){
     const tag8 = document.getElementById('infoEndereco');
     tag8.appendChild(texto8);
 
-    const texto9 = document.createTextNode(" " + dadosCliente[2][0].numero + ", " + dadosCliente[2][1].complemento);
+    const texto9 = document.createTextNode(" " + dadosCliente[2].numero + ", " + dadosCliente[2].complemento);
     const tag9 = document.getElementById('infoComplemento');
     tag9.appendChild(texto9);
 
@@ -506,7 +508,6 @@ function nChamadasDeInsercao(idPedido){
 
 /* Insere itens no pedido */
 function insereItensPedido(i, idPedido){
-    //carrinho.produto[0].codigo
     console.log(idPedido);
     const insereItensURL = "http://loja.buiar.com/?key=35xkr4&c=item&t=inserir&f=json&pedido="+ idPedido +"&produto=" + carrinho.produto[i].id + "&qtd=" + carrinho.produto[i].quantidade;
     console.log(insereItensURL)
@@ -516,28 +517,21 @@ function insereItensPedido(i, idPedido){
     request.send();
     request.onload = function() {
         let data = request.response;
-        resumoPedido(data.dados.id);
   }; 
+  telaFinalPedido(idPedido);
 }
 
-function resumoPedido(idProduto){
-    const numero = document.createTextNode(" " + idProduto);
-    console.log(idProduto);
+/* Tela final com a informação do id do pedido */
+function telaFinalPedido(idPedido){
+    carrinho.limparCarrinho();
+    dadosCliente.length = 0 //Limpa array de dados do cliente
+    const numero = document.createTextNode(" " + idPedido);
     const tag = document.getElementById('infoNumPedido');
     tag.appendChild(numero);
 
-    var urlBoleto = "http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=" + idProduto;
+    var urlBoleto = "http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=" + idPedido;
 
     const boleto = document.createTextNode(" " + urlBoleto);
     const tag1 = document.getElementById('infoBoleto');
     tag1.appendChild(boleto);
-
-    /* var texto = idProduto;
-    var hElement = document.createElement("H1");
-    var tElement = document.createTextNode(texto);
-    hElement.appendChild(tElement);
-    document.getElementById('resumoPedido').appendChild(hElement); */
 }
-
-/* Após a efetivação do pedido, deverá ser montada a tela de confirmação 
-    indicado o número do pedido efetuado. Neste ponto o carrinho de compras deve ser esvaziado. */
