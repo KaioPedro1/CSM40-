@@ -54,6 +54,8 @@
         type="button" role="tab" aria-controls="nav-categoria" aria-selected="true">Listar categorias</button>
       <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-produto" type="button"
         role="tab" aria-controls="nav-produto" aria-selected="false">Listar produtos</button>
+      <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-pedidos" type="button"
+        role="tab" aria-controls="nav-pedidos" aria-selected="false" onclick="gera_pedidos()">Histórico de pedidos</button>
     </div>
  
 
@@ -84,6 +86,30 @@
           <div id="filtro_div_prod" class="col-6"></div>
           <div id="display_tabela_prod"></div>
         </div>
+      </div>
+    
+    
+    
+    
+    
+    
+    </div>
+    
+    <div class="tab-pane fade" id="nav-pedidos" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+      <div class="row">
+      <div class="tab-pane fade show active col-4" role="tabpanel" aria-labelledby="nav-cat-tab"
+        tabindex="0">
+        <ol class="list-group list-group-numbered" id="lista_pedidos">
+   
+        </ol>
+          
+        </div>
+        <div class="col-8" ><h1>Detalhes do Pedido</h1> 
+        <div class="row"id="detalhes_pedidos"></div>
+        <div><h1>Itens do pedido</h1></div>
+        <div class="row"id="detalhes_pedidos_item"></div>
+       </div>
+      
       </div>
     </div>
   </div>

@@ -5,6 +5,8 @@ const loja_categoria_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria
 const loja_produto_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=listar"
 const loja_remover_prod_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=remover&id="
 const loja_remover_cate_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=remover&id="
+const loja_pedido_URL="http://loja.buiar.com/?key=35xkr4&f=json&c=pedido&t=listar"
+const loja_pedido_item_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=item&t=listar&pedido="
 /*existe uma maneira correta de buscar pela api,  que é importando a biblioteca e instanciando uma classe do google search, mas não consegui e vai ser pela url mesmo. O "cx é a chave da search engine que é gerada pelo google cloud e a key é a chave da api também gerada vinculada com a conta google"*/
 const googleSearchURL = "https://customsearch.googleapis.com/customsearch/v1?cx=57045d6ec622c4289&searchType=image&key=AIzaSyB8XoAfOHeb5aS4odsWv9yTFvc9S0GadAE&num=1&q="
 
@@ -13,6 +15,7 @@ const googleSearchURL = "https://customsearch.googleapis.com/customsearch/v1?cx=
 var lista_produtos
 var lista_categoria
 var lista_marcas
+var lista_pedidos
 var obj_veiculo;
 var categoria_hash_map = new Map()
 /*executa só uma vez na inicialização, pega todos os dados de forma assincrona */
@@ -20,13 +23,15 @@ const loadData = async () =>{
     const results = await Promise.all([
         fetch(loja_produto_URL),
         fetch(loja_categoria_URL),
-        fetch(fipe_URL)
+        fetch(fipe_URL),
+        fetch(loja_pedido_URL)
     ])
     const dataPromises =  results.map(result => result.json());
     const data = await Promise.all(dataPromises);
     lista_produtos = data[0];
     lista_categoria = data[1];
-    lista_marcas = data[2]; 
+    lista_marcas = data[2];
+    lista_pedidos= data[3].dados;
 
     for(let k=0; k<lista_categoria.dados.length;k++){
         categoria_hash_map.set(lista_categoria.dados[k].id, lista_categoria.dados[k].nome)
@@ -125,7 +130,71 @@ function drawCategoriaChart(){
     tabela.setDataTable(dadosTabela);
     tabela.draw();
 }
-  
+function detalhes_pedidos(id, obj){
+    detalhesHTML = document.getElementById('detalhes_pedidos');
+    itensHTML = document.getElementById('detalhes_pedidos_item')
+    while (detalhesHTML.firstChild) {
+        detalhesHTML.firstChild.remove();
+    }
+    while (itensHTML.firstChild) {
+        itensHTML.firstChild.remove();
+    }
+    fetch(loja_pedido_item_URL+id).then(res => res.json()).then(data=>{
+        let item= document.createElement('div');
+        item.classList.add("row");
+        if(data.dados.length==0){
+            item.innerText="Pedido não possui nenhum item vinculado ao seu id!"
+        }else{
+            let preco = 0
+            for(let j=0; j<data.dados.length; j++){
+                for(let i = 0; i<lista_produtos.dados.length; i++){
+                    if(data.dados[j].produto==lista_produtos.dados[i].id){
+                        data.dados[j].produto=lista_produtos.dados[i].nome;
+                        preco=parseFloat(lista_produtos.dados[i].preco)
+                        break;
+                    }
+                }
+                item.innerHTML=`<h4>Item número: ${data.dados[j].id}</h4>
+                <p>Pedido:${data.dados[j].pedido}</p></hr>
+                <p>Produto:${data.dados[j].produto}</p></hr>
+                <p>Quantidade:${data.dados[j].qtd}</p></hr>
+                <p>Valor total:${(preco*data.dados[j].qtd).toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})}</p></hr>
+                `
+            }
+        }
+        itensHTML.appendChild(item)
+        itensHTML.appendChild(document.createElement('hr'))
+    })
+    Object.entries(obj).forEach(([key, value]) => 
+    {
+        let novoElemento = document.createElement('div');
+        novoElemento.classList.add("row");
+        novoElemento.innerText=key+': '+value;
+        detalhesHTML.appendChild(novoElemento)
+        detalhesHTML.appendChild(document.createElement('hr'))
+    });
+
+}
+function gera_pedidos(){
+    lista_pedidosHTML = document.getElementById('lista_pedidos');
+    while (lista_pedidosHTML.firstChild) {
+        lista_pedidosHTML.firstChild.remove();
+    }
+    for(let k = 0 ; k<lista_pedidos.length;k++){
+        let novoElemento = document.createElement('li');
+        novoElemento.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-start list-group-item-action');
+        novoElemento.id=lista_pedidos[k].id;
+        novoElemento.addEventListener('click', function(){
+            detalhes_pedidos(lista_pedidos[k].id, lista_pedidos[k]);
+        });
+        novoElemento.innerHTML=` <div class="ms-2 me-auto">
+        <div class="fw-bold">Pedido ID:${lista_pedidos[k].id}</div>
+        Cliente:${lista_pedidos[k].nome}, CPF: ${lista_pedidos[k].cpf}, CEP: ${lista_pedidos[k].cep}
+        </div>`
+        lista_pedidosHTML.appendChild(novoElemento)
+
+    }
+} 
 function criaBotao(value, name, id, funcName){
     if(funcName=='alterarCategoria'){
         return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"data-bs-toggle="modal" data-bs-target="#modal_categoria"/>`

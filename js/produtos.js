@@ -126,7 +126,6 @@ function drop(event){
     var data = event.dataTransfer.getData('text');
     carrinho.addProduto(data);
 }
-//funcão chamada no carregamento da pagina, cria todos os filtros sem a flag e com flag só cria as marcas
 function criaFiltrosHTML(){
     const filtroCategorias =  document.getElementById('filtro_categorias');
     const filtroMarcas = document.getElementById('filtro_marcas');
