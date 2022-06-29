@@ -1,0 +1,62 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formulario{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200vh;
+    height: 15vh;
+}
+
+.formulario .botao{
+    font-family: "Montserrat";
+    border-radius: 5px;
+    width: 10rem;
+    height: 2rem;
+}
+
+.formulario .botao:hover{
+    background-color: dimgray;
+}
+
+.formulario .caixa{
+    border-radius: 5px;
+    width: 15rem;
+    height: 2rem;
+}
+
+#pedidos{
+    /*display: flex;*/
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 200vh;
+    height: 15vh;
+    border: 1px;
+    border-color: black;
+}
+
+#pedidos button{
+    font-family: "Montserrat";
+    border-radius: 5px;
+    width: 10rem;
+    height: 2rem;
+}
+
+#pedidos button:hover{
+    background-color: dimgray;
+}
+
+#pedidos p{
+    margin: 0 2rem 0 2rem;
+}

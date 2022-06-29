@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/barraMenu.css">
-  <script src="pedidos.js"></script>
+  <link rel="stylesheet" href="css/pedidos.css">
+  <script src="js/pedidos.js" defer></script>
     <title>Pedidos</title>
 </head>
 <body>
@@ -36,7 +37,17 @@
           </ul>
      </nav>
      <main>
-         <p>Página que contém as informações de pedidos realizados.</p>
+      <div class="formulario">
+        <form action="">
+          <label for="texto"> Digite o ID do seu pedido para fazer a busca:</label>
+          <input type="text" name="texto" id="idBusca" class="caixa">
+          <input type="button" value="Buscar pedido" id="BuscaPedido" onClick="buscaPedido()" class="botao">
+       </form>
+      </div>  
      </main>
+
+     <div id="pedidos">
+      
+     </div>
 </body>
 </html>
