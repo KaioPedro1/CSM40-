@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="css/barraMenu.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript"></script>
+  <script src="js/adminJs.js"></script>
+  
+</head>
+
+<body>
+  <nav>    
+      <label class="logo">
+          <img src="imagens\logo.png" width="125px">
+      </label>
+        <ul>
+            <li><a href="index.html">Home</a> </li>
+            <li><a href="produtos.html">Produtos</a>
+                  
+                  <ul>Lista para o submenu quando adicionarmos o css
+                             <li><a href="produtos.html">Hatch</a></li>
+                             <li><a href="#">Sedan</a></li>
+                             <li><a href="#">Picape</a></li>
+                             <li><a href="#">SUV</a></li>
+                  </ul>
+        
+             </li>   
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="pedidos.html">Pedidos</a></li>
+            <li><a href="administracao.html">Administração</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+   </nav>
+  <div id="menu">
+      <button onclick="listarCategorias()">Lista de categorias</button>
+      <button onclick="listarProdutos()">Lista de produtos</button>
+      <button onclick="mostraPopup('categoria', 'Inserção','inserir',0)" id = "botaoAdcCategoria" class = "botaoAdicionar">Adicionar categoria</button>
+      <button onclick="mostraPopup('produto', 'Inserção', 'inserir',0)"id = "botaoAdcProduto" class = "botaoAdicionar">Adicionar produto</button>
+  </div>
+  <div id="displayEntrada" style = "display: none;">
+      <div class="popup">
+          <button id = "closePopup" onclick="fechaPopup()">X</button>
+          <h1 id = "textoForm"></h1>
+
+          <form id ="dadosCategoriaInsere" class = "formularioDados row g-3" style="display: none;">
+              <label for="nomeCategoria" class="form-label" >Nome da nova categoria:</label> 
+              <input type="text" name="nomeCategoria" class="form-control" id="nomeCategoria" placeholder="Sedan" onchange="this.value=this.value.toUpperCase()" required>
+              <div class="col-12">
+                  <input type="submit"  class="btn btn-primary" id="botao_enviar_categoria">
+              </div>
+          </form>
+
+          <form id="dadosProdutoInsere" class = "formularioDados row g-3"  style="display: none;">
+              <div class="col-md-7">
+                  <label for="nomeProduto" class="form-label">Nome do produto</label> 
+                  <input type="text"  class="form-control" name="nome" id="nomeProduto" placeholder="Fiat bazuka" onchange="this.value=this.value.toUpperCase()"required>
+              </div>
+              <div class="col-md-2">
+                  <label for="selectID" class="form-label">Categoria</label>
+                  <select name="categoria" class="form-select" id="selectID"></select>
+              </div>
+              <div class="col-md-3">
+                  <label for="codigo"class="form-label">Código do produto </label>
+                  <input type="number" class="form-control" name="codigo" id="codigoProduto" placeholder="Número de 1 a 1000" min="1" max="1001" required>
+              </div>
+              <div class="col-md-3">
+                  <label for="preco" class="form-label">Preco do produto em R$</label>
+                  <input type="number" class="form-control" step=".01" name = "preco"id="precoProduto" min="0" placeholder="120.000" required>
+              </div>
+              <div class="col-md-3">
+                  <label for="peso"class="form-label">Peso em KG </label>
+                  <input type="number" class="form-control" step=".001" name= "peso" id="pesoProduto" min="700" placeholder="1200" required>
+              </div>
+              <div class="col-md-6">
+                  <label for="formFile" class="form-label">Imagem do produto</label>
+                  <input class="form-control" type="file" id="formFile">
+              </div>
+              <label for="descricao"class="form-label">Descrição:</label>
+              <textarea name="descricao" class="form-control"  id="descricao" cols="30" rows="10" from="dadosProdutoInsere">Insira a descrição aqui...</textarea>
+              <div class="col-12">
+              <input type="submit"  class="btn btn-primary" id="botao_enviar_produto"></div>
+          </form>
+
+      </div>
+  </div>
+  <div id="dashboard_div" class= "row" >
+      <div id="filter_div1" class = "col-6"> </div>
+      <div id="filter_div2" class = "col-6"> </div>
+      <div id="displayTabela"></div>
+  </div>
+</body>
+
+</html>
