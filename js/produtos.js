@@ -16,7 +16,7 @@ var carrinho;
 var dadosCliente = [];
 var idPedido;
 
-/* treinando async, await, fetch e promise, aqui é a mesma coisa que utilizar o XMLhttpRequest*/
+/* treinando async, await, fetch e promise, aqui é a mesa ideia que utilizar o XMLhttpRequest*/
 async function getData(){
     carrinho = new Carrinho();
     let responseProduto = await fetch(listar_produto_URL);
@@ -132,7 +132,7 @@ function drop(event){
     var data = event.dataTransfer.getData('text');
     carrinho.addProduto(data);
 }
-//4 funções para os fltros
+//4 funções para os filtros
 function criaFiltrosHTML(){
     const filtroCategorias =  document.getElementById('filtro_categorias');
     const filtroMarcas = document.getElementById('filtro_marcas');
@@ -319,7 +319,6 @@ class Carrinho{
             }  
         }
         this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
-
         this.atualizaIconeCarrinho();
     }
     atualizaIconeCarrinho(){

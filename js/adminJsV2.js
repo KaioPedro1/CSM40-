@@ -7,7 +7,7 @@ const loja_remover_prod_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produt
 const loja_remover_cate_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=remover&id="
 const loja_pedido_URL="http://loja.buiar.com/?key=35xkr4&f=json&c=pedido&t=listar"
 const loja_pedido_item_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=item&t=listar&pedido="
-/*existe uma maneira correta de buscar pela api,  que é importando a biblioteca e instanciando uma classe do google search, mas não consegui e vai ser pela url mesmo. O "cx é a chave da search engine que é gerada pelo google cloud e a key é a chave da api também gerada vinculada com a conta google"*/
+/*existe uma maneira correta de buscar pela api,  que é importando a biblioteca e instanciando uma classe do google search, mas não consegui e vai ser pela url mesmo. O "cx" é a chave da search engine que é gerada pelo google cloud e a key é a chave da api também gerada vinculada com a conta google"*/
 const googleSearchURL = "https://customsearch.googleapis.com/customsearch/v1?cx=57045d6ec622c4289&searchType=image&key=AIzaSyB8XoAfOHeb5aS4odsWv9yTFvc9S0GadAE&num=1&q="
 
 
@@ -17,6 +17,7 @@ var lista_marcas
 var lista_pedidos
 var obj_veiculo;
 var categoria_hash_map = new Map()
+
 /*executa só uma vez na inicialização, pega todos os dados de forma assincrona */
 const loadData = async () =>{
     const results = await Promise.all([
@@ -44,7 +45,7 @@ const loadData = async () =>{
     genericaPreencheSelection('selectMarca',lista_marcas, preencheSelectionNome, 'selectAnoFipe');
 
 };loadData();
-/*removendo envio automatico do formulario por url */
+/*removendo envio automatico do formulario por url e setando eventos*/
 document.addEventListener("DOMContentLoaded", ()=>
 {
     let formCategoria = document.getElementById('form_categoria');
@@ -91,6 +92,7 @@ function drawProdutoChart(){
                     'width': '100%'
                 }
               });
+    //juntaod o filtro categoria para a tabela
     dashboard.bind([filtro_categoria],tabela);
 
     let cabecalho = ['Id', 'Codigo', 'Categoria', 'Nome', 'Descricao', 'Preco', 'URL ou caminho imagem', 'Peso', 'Eventos/Açoes']
@@ -159,6 +161,7 @@ function detalhes_pedidos(id, obj){
                 <p>Produto:${data.dados[j].produto}</p></hr>
                 <p>Quantidade:${data.dados[j].qtd}</p></hr>
                 <p>Valor total:${(preco*data.dados[j].qtd).toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})}</p></hr>
+                <a href="http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=${data.dados[j].pedido}" target="_blank">Link para o boleto</a>
                 `
             }
         }
@@ -195,7 +198,7 @@ function gera_pedidos(){
 
     }
 } 
-
+//2 funcoes de utilidades
 function criaBotao(value, name, id, funcName){
     if(funcName=='alterarCategoria'){
         return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"data-bs-toggle="modal" data-bs-target="#modal_categoria"/>`
@@ -494,7 +497,7 @@ function preencheCampoPreco(e){
         selecaoPrecoFipe.value=obj_veiculo.Valor;
     })
 }
-//teste
+//teste criminoso
 class dadosBackend{
     constructor(arrayForm, alterarID){
         if(alterarID){

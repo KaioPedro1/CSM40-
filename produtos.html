@@ -20,23 +20,14 @@
 </head>
 
 <body>
+  <!--MENU SUPERIOR-->
   <nav>
     <label class="logo">
       <img src="imagens\logo.png" width="125px">
     </label>
     <ul>
       <li><a href="index.html">Home</a> </li>
-      <li><a href="produtos.html">Produtos</a>
-
-        <ul>
-          <!--Lista para o submenu quando adicionarmos o css-->
-          <li><a href="produtos.html">Hatch</a></li>
-          <li><a href="#">Sedan</a></li>
-          <li><a href="#">Picape</a></li>
-          <li><a href="#">SUV</a></li>
-        </ul>
-
-      </li>
+      <li><a href="produtos.html">Produtos</a></li>
       <li><a href="sobre.html">Sobre</a></li>
       <li><a href="contato.html">Contato</a></li>
       <li><a href="pedidos.html">Pedidos</a></li>
@@ -44,15 +35,16 @@
       <li><a href="login.html">Login</a></li>
     </ul>
   </nav>
-     <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
-        <div class="fixed-bottom">
-          <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" ondragover="allowdrop(event)" ondrop="drop(event)">
-            <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
-            <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
-              0
-            </span>
-          </button>
-        </div>
+  <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
+  <div class="fixed-bottom">
+    <button id="carrinhoBTN" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
+      ondragover="allowdrop(event)" ondrop="drop(event)">
+      <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
+      <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
+        0
+      </span>
+    </button>
+  </div>
   <!--OFFCANVAS CARRINHO-->
   <aside>
     <div class="offcanvas offcanvas-end w-25" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -64,19 +56,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <div class="container h-75" id = "carrinhoProdutos" style=" overflow: scroll;">
-      </div>
-          
+        <div class="container h-75" id="carrinhoProdutos" style=" overflow: scroll;">
+        </div>
+
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
-            <div id = "containerSubtotal">
+            <div id="containerSubtotal">
               <h5>Subtotal:<span class="badge text-bg-light" id="carrinho_subtotal">R$:0</span>
               </h5>
             </div>
-            <BUtton class="p-2 btn btn-outline-secondary" data-bs-target="#offcanvasRight2" aria-controls="offcanvasRight2" data-bs-toggle="offcanvas" >Finalizar compra</BUtton>
+            <BUtton class="p-2 btn btn-outline-secondary" data-bs-target="#offcanvasRight2"
+              aria-controls="offcanvasRight2" data-bs-toggle="offcanvas">Finalizar compra</BUtton>
             <BUtton class="p-2 btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close">Continuar
               comprando</BUtton>
-            <BUtton class="p-2 btn btn-outline-secondary" onclick = "carrinho.limparCarrinho()">Limpar carrinho</BUtton>
+            <BUtton class="p-2 btn btn-outline-secondary" onclick="carrinho.limparCarrinho()">Limpar carrinho</BUtton>
           </div>
         </footer>
       </div>
@@ -84,7 +77,8 @@
   </aside>
   <!--CONFIRMACAO DE PEDIDO-->
   <aside>
-    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight2" aria-labelledby="offcanvasRight2Label">
+    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight2"
+      aria-labelledby="offcanvasRight2Label">
       <div class="offcanvas-header border-Right">
         <h5 class="offcanvas-title" id="offcanvasRight2Label">
           <h1>Finalização de Compra</h1>
@@ -94,7 +88,7 @@
       </div>
       <!-- DADOS DO CLIENTE -->
       <div class="offcanvas-body">
-        <div class="container h-90">     
+        <div class="container h-90">
           <div class="dadosCliente" id="clientePreenche">
             <div class="form-group col-md-3" id="elementoForm1">
               <label for="inputNome">Nome</label>
@@ -109,7 +103,7 @@
               <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000000">
             </div>
             <input type='button' value='Buscar' onClick='buscarCep()' id="elementoForm4">
-          </div>  
+          </div>
           <div class="dadosCliente2" id="clienteNaoPreenche">
             <div class="form-group col-md-3" id="elementoForm5">
               <label for="inputRua">Rua</label>
@@ -122,8 +116,8 @@
             <div class="form-group col-md-3" id="elementoForm7">
               <label for="inputCidade">Cidade</label>
               <input type="text" class="form-control" id="cidade" readonly>
-            </div> 
-          </div>         
+            </div>
+          </div>
           <div class="dadosCliente3" id="clientePreencheCompl">
             <div class="form-group col-md-1" id="elementoForm8">
               <label for="inputUF">UF</label>
@@ -136,19 +130,22 @@
             <div class="form-group col-md-3" id="elementoForm10">
               <label for="inputCompl">Complemento</label>
               <input type="text" class="form-control" id="complemento">
-            </div>  
-          </div>   
-        </div> 
+            </div>
+          </div>
+        </div>
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%;">
-          <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">    
-            <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight3" aria-controls="offcanvasRight3" ondragover="allowdrop(event)" ondrop="drop(event)" onClick="resumoDadosEPedidos()">Avançar</BUtton>
+          <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
+            <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight3"
+              aria-controls="offcanvasRight3" ondragover="allowdrop(event)" ondrop="drop(event)"
+              onClick="resumoDadosEPedidos()">Avançar</BUtton>
           </div>
         </footer>
       </div>
   </aside>
-  <!-- Resumo informações do cliente e pedido --> 
+  <!-- Resumo informações do cliente e pedido -->
   <aside>
-    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight3" aria-labelledby="offcanvasRight3Label">
+    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight3"
+      aria-labelledby="offcanvasRight3Label">
       <div class="offcanvas-header border-bottom" id="tituloPedido">
         <h5 class="offcanvas-title" id="offcanvasRight3Label">
           <h1>Resumo</h1>
@@ -157,58 +154,62 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <div class="container h-75" id = "resumoDadosCliente" style=" overflow: scroll;">  
-          <h4>Compra</h4>     
+        <div class="container h-75" id="resumoDadosCliente" style=" overflow: scroll;">
+          <h4>Compra</h4>
           <p id="infoNomeProd"><b>Produto:</b></p>
           <p id="infoDescricao"><b>Descricao:</b></p>
           <p id="infoPreco"><b>Preço:</b></p>
           <p id="infoQuantidade"><b>Quantidade:</b></p>
-          <h4>Seus dados</h4> 
+          <h4>Seus dados</h4>
           <p id="infoNomeCliente"><b>Nome:</b></p>
           <p id="infoCPF"><b>CPF:</b></p>
           <p id="infoCEP"><b>CEP:</b></p>
           <p id="infoEndereco"><b>Endereço:</b></p>
           <p id="infoComplemento"><b>Complemento:</b></p>
-        </div>      
+        </div>
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
-            <div id = "containerSubtotal2">
+            <div id="containerSubtotal2">
               <h5>Subtotal:<span class="badge text-bg-light" id="infoTotal">R$:</span>
               </h5>
             </div>
-            <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight4" aria-controls="offcanvasRight4" ondragover="allowdrop(event)" ondrop="drop(event)" onclick="enviaRequisicao()">Confirmar Pedido</BUtton>          
+            <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight4"
+              aria-controls="offcanvasRight4" ondragover="allowdrop(event)" ondrop="drop(event)"
+              onclick="enviaRequisicao()">Confirmar Pedido</BUtton>
           </div>
         </footer>
       </div>
   </aside>
   <!-- TELA DE CONFIRMAÇÃO -->
   <aside>
-    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight4" aria-labelledby="offcanvasRight4Label">
+    <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight4"
+      aria-labelledby="offcanvasRight4Label">
       <div class="offcanvas-header border-bottom" id="tituloConfirmação">
         <h5 class="offcanvas-title" id="offcanvasRight4Label">
           <h1>Pedido Confirmado</h1>
           <hr>
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" onClick="carrinho.limparCarrinho();"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+          onClick="carrinho.limparCarrinho();"></button>
       </div>
       <div class="offcanvas-body">
-        <div class="container h-75" id = "resumoPedido" style=" overflow: scroll;">  
+        <div class="container h-75" id="resumoPedido" style=" overflow: scroll;">
           <h3 id="infoNumPedido">Pedido</h3>
           <h3>Realizado com sucésso!</h3>
           <p id="infoBoleto">Link para emissão do boleto: </p>
-        </div>      
+        </div>
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
-            <BUtton class="p-2 btn btn-outline-secondary" data-bs-dismiss="offcanvas" onClick="carrinho.limparCarrinho();">Fechar</BUtton>         
+            <BUtton class="p-2 btn btn-outline-secondary" data-bs-dismiss="offcanvas"
+              onClick="carrinho.limparCarrinho();">Fechar</BUtton>
           </div>
         </footer>
       </div>
   </aside>
-
   <!--CONTEUDO PRINCIPAL, CATALOGO-->
   <main class="container-fluid">
     <br>
-    <div class="row"> 
+    <div class="row">
       <!--FILTRO LATERAL ESQUERDA-->
       <div class="col-2">
         <div class="sticky-top d-flex align-items-start flex-column">
@@ -216,22 +217,22 @@
             <h1>Filtros</h1>
           </div>
           <div class="p-2 w-100 border-bottom">
-            <h4 >Categorias</h4>
-            <div class="list-group" id = "filtro_categorias"></div>
+            <h4>Categorias</h4>
+            <div class="list-group" id="filtro_categorias"></div>
           </div>
 
           <div class="p-2 w-100 border-bottom">
             <h4>Marcas</h4>
-            <div class="list-group" id = "filtro_marcas"></div>
+            <div class="list-group" id="filtro_marcas"></div>
           </div>
         </div>
-    </div>
+      </div>
       <!--SECAO PRINCIPAL COM OS PRODUTOS INSERIDOS VIA JS-->
       <section id="produtos" class="card mb-3 col-10"></section>
 
     </div>
-    
-  
+
+
   </main>
 </body>
 
