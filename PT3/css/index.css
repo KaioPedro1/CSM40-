@@ -1,0 +1,47 @@
+.row{
+	display: flex;
+	align-items: center;
+ 	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.col-2{
+	flex-basis: 50%;
+	win-width: 300px;
+}
+
+
+
+.col-2 h1{
+	font-size: 50px;
+	line-height: 30px;
+	margin: 25px 0;
+  color: #002cff;
+}
+.col-2 h2{
+	font-size: 20px;
+
+}
+
+.categorias{
+  display: inline-flex;
+}
+
+.header .linha{
+	margin-top:65px;
+}
+
+
+.header .linha{
+	margin-top:65px;
+}
+
+.col-3 img{
+	width: 200px
+}
+
+.container{
+	max-width: 1080px;
+	margin: auto;
+	padding-left: 55px;
+
+}

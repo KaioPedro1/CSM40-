@@ -1,0 +1,14 @@
+.body{
+ 
+}
+
+.formulario{
+	width: 360px;
+	height: 400px;
+	margin: auto;
+	background-color: #f1f1f1;
+	border-radius: 3px;
+  margin-left: 20px;
+  text-align: center;
+  margin: 8% auto 0;
+}
