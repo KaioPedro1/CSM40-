@@ -100,7 +100,7 @@
             </div>
             <div class="form-group col-md-3" id="elementoForm3">
               <label for="inputCEP">CEP</label>
-              <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000000">
+              <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000-000">
             </div>
             <input type='button' value='Buscar' onClick='buscarCep()' id="elementoForm4">
           </div>
@@ -137,7 +137,7 @@
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
             <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight3"
               aria-controls="offcanvasRight3" ondragover="allowdrop(event)" ondrop="drop(event)"
-              onClick="resumoDadosEPedidos()">Avançar</BUtton>
+              onClick="armazenaDadosForms(); resumoDadosEPedidos();">Avançar</BUtton>
           </div>
         </footer>
       </div>
@@ -157,7 +157,7 @@
         <div class="container h-75" id="resumoDadosCliente" style=" overflow: scroll;">
           <h4>Compra</h4>
           <p id="infoNomeProd"><b>Produto:</b></p>
-          <p id="infoDescricao"><b>Descricao:</b></p>
+          <p id="infoDescricao"><b>Descrição:</b></p>
           <p id="infoPreco"><b>Preço:</b></p>
           <p id="infoQuantidade"><b>Quantidade:</b></p>
           <h4>Seus dados</h4>
@@ -170,7 +170,7 @@
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
             <div id="containerSubtotal2">
-              <h5>Subtotal:<span class="badge text-bg-light" id="infoTotal">R$:</span>
+              <h5>Total:<span class="badge text-bg-light" id="infoTotal">R$:</span>
               </h5>
             </div>
             <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight4"
@@ -194,9 +194,9 @@
       </div>
       <div class="offcanvas-body">
         <div class="container h-75" id="resumoPedido" style=" overflow: scroll;">
-          <h3 id="infoNumPedido">Pedido</h3>
-          <h3>Realizado com sucésso!</h3>
-          <p id="infoBoleto">Link para emissão do boleto: </p>
+          <h2 id="infoNumPedido">Pedido ID: </h2>
+          <h2>Realizado com sucesso!</h2>
+          <p>Link para emissão do boleto: <a id="infoBoleto"></a></p>
         </div>
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
