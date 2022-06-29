@@ -4,13 +4,18 @@ const produtosDivID = document.getElementById('produtos');
 const corBadgeVermelha = "position-absolute translate-middle badge rounded-pill text-bg-danger"
 const corBadgeVerde = "position-absolute translate-middle badge rounded-pill text-bg-success"
 const carrinhoProdutos = document.getElementById('carrinhoProdutos');
+var btn = document.getElementById("buscaPedido");
+var requestUrl;
+var id;
 
 /* variaveis globais*/
 var lista_produtos
 var lista_categorias
 var categoria_hash_map = new Map()
 var carrinho;
- 
+var dadosCliente = [];
+var idPedido;
+
 /* treinando async, await, fetch e promise, aqui é a mesma coisa que utilizar o XMLhttpRequest*/
 async function getData(){
     carrinho = new Carrinho();
@@ -42,7 +47,7 @@ function tratamentoProdutos(){
         lista_produtos.dados[k].preco = parseInt(lista_produtos.dados[k].preco).toLocaleString('pt-br', formato)
     }
 }
-//funcão chamada no carregamento da pagina
+//2 funcões chamada no carregamento da pagina
 function criaCatalogoHTML(dadosProdutos){
     let newSection = document.createElement('section');
     newSection.classList.add("produto");
@@ -115,6 +120,7 @@ function criaCarrinhoOffcanvasHTML(produto){
             </div>`;
     carrinhoProdutos.appendChild(newRow);
 }
+//3 funçoes para o drag and drop
 function drag(event){
     event.dataTransfer.setData('text', event.target.id);
 }
@@ -126,6 +132,7 @@ function drop(event){
     var data = event.dataTransfer.getData('text');
     carrinho.addProduto(data);
 }
+//4 funções para os fltros
 function criaFiltrosHTML(){
     const filtroCategorias =  document.getElementById('filtro_categorias');
     const filtroMarcas = document.getElementById('filtro_marcas');
@@ -253,6 +260,7 @@ function verificaFiltroMarcaExiste(cat){
     }
     return false;
 }
+//duas classes principais
 class Carrinho{
     constructor(){
         //array de produtoCarrinho
@@ -393,3 +401,144 @@ class ProdutoCarrinho{
         return (this.quantidade*preco);
     }
 } 
+
+/*Busca CEP*/
+function buscarCep() {
+	let url = 'https://viacep.com.br/ws/' + cep.value + '/json';
+    console.log("acessando " + url);
+    let request = new XMLHttpRequest();
+    request.open('GET', url);
+    request.responseType = 'json';
+    request.send();
+    request.onload = function() {
+        console.log(carrinho.HTMLcarrinhoSubtotal);
+        dadosCliente.push(request.response);
+        rua.value = dadosCliente[0].logradouro;
+        bairro.value = dadosCliente[0].bairro;
+        cidade.value = dadosCliente[0].localidade;
+        uf.value = dadosCliente[0].uf;
+        nomeInput = document.getElementById("nome").value
+        cpfInput = document.getElementById("cpf").value
+        var dadosC = [{nome: nomeInput}, {cpf: cpfInput}];
+        dadosCliente.push(dadosC);
+        numInput = document.getElementById("numero").value
+        complInput = document.getElementById("complemento").value
+        var dadosCCompl = [{numero: numInput}, {complemento: complInput}];
+        dadosCliente.push(dadosCCompl);
+  };
+}
+
+/* Envia a requisicao para o backend */
+function enviaRequisicao(){
+    nomeCliente = document.getElementById("nome").value + "&";
+    nomeCliente = encodeURI(nomeCliente);
+    cpfCliente = "cpf=" + document.getElementById("cpf").value + "&cep=";
+    numCliente = "&numero=" + document.getElementById("numero").value + "&";
+    complCliente = "complemento=" + document.getElementById("complemento").value;
+    
+    const RequisicaoURL = "http://loja.buiar.com/?key=35xkr4&c=pedido&t=inserir&f=json&nome=" + nomeCliente + cpfCliente + dadosCliente[0].cep 
+    + "&rua=" + encodeURI(dadosCliente[0].logradouro) + "&bairro=" + encodeURI(dadosCliente[0].bairro) + "&uf=" + dadosCliente.uf + "&rua=" 
+    + encodeURI(dadosCliente[0].logradouro) + "&cidade=" + encodeURI(dadosCliente[0].localidade) + numCliente + complCliente;
+    console.log(RequisicaoURL);
+    let request = new XMLHttpRequest();
+    request.open('GET', RequisicaoURL);
+    request.responseType = 'json';
+    request.send();
+    request.onload = function() {
+        let data = request.response;
+        console.log(data);
+        idPedido = data.dados.id;
+        nChamadasDeInsercao(idPedido);
+    };
+}
+
+/* Mostra resumo dados do cliente e pedido */
+function resumoDadosEPedidos(){
+    console.log(carrinho.produto);
+    /* Info do pedido */
+    for (var i = 0; i < carrinho.produto.length; i++){
+        const texto1 = document.createTextNode(" " + carrinho.produto[i].nome + "; ");
+        const tag1 = document.getElementById('infoNomeProd');
+        tag1.appendChild(texto1);
+
+        const texto2 = document.createTextNode(" " + carrinho.produto[i].descricao + "; ");
+        const tag2 = document.getElementById('infoDescricao');
+        tag2.appendChild(texto2);
+
+        const texto3 = document.createTextNode(" " + carrinho.produto[i].preco + "; ");
+        const tag3 = document.getElementById('infoPreco');
+        tag3.appendChild(texto3);
+
+        const texto4 = document.createTextNode(" " + carrinho.produto[i].quantidade + "; ");
+        const tag4 = document.getElementById('infoQuantidade');
+        tag4.appendChild(texto4);
+    }
+    /* info do cliente */
+    const texto5 = document.createTextNode(" " + dadosCliente[1][0].nome);
+    const tag5 = document.getElementById('infoNomeCliente');
+    tag5.appendChild(texto5);
+
+    const texto6 = document.createTextNode(" " + dadosCliente[1][1].cpf);
+    const tag6 = document.getElementById('infoCPF');
+    tag6.appendChild(texto6);
+
+    const texto7 = document.createTextNode(" " + dadosCliente[0].cep);
+    const tag7 = document.getElementById('infoCEP');
+    tag7.appendChild(texto7);
+
+    const texto8 = document.createTextNode(" " + dadosCliente[0].logradouro + ", " + dadosCliente[0].bairro + " - " + dadosCliente[0].localidade + ", " + dadosCliente[0].uf);
+    const tag8 = document.getElementById('infoEndereco');
+    tag8.appendChild(texto8);
+
+    const texto9 = document.createTextNode(" " + dadosCliente[2][0].numero + ", " + dadosCliente[2][1].complemento);
+    const tag9 = document.getElementById('infoComplemento');
+    tag9.appendChild(texto9);
+
+    const texto10 = document.createTextNode(carrinho.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'}));
+    const tag10 = document.getElementById('infoTotal');
+    tag10.appendChild(texto10);
+}
+
+function nChamadasDeInsercao(idPedido){
+    for (var i = 0; i < carrinho.produto.length; i++){
+        insereItensPedido(i, idPedido);
+    }
+}
+
+/* Insere itens no pedido */
+function insereItensPedido(i, idPedido){
+    //carrinho.produto[0].codigo
+    console.log(idPedido);
+    const insereItensURL = "http://loja.buiar.com/?key=35xkr4&c=item&t=inserir&f=json&pedido="+ idPedido +"&produto=" + carrinho.produto[i].id + "&qtd=" + carrinho.produto[i].quantidade;
+    console.log(insereItensURL)
+    let request = new XMLHttpRequest();
+    request.open('GET', insereItensURL);
+    request.responseType = 'json';
+    request.send();
+    request.onload = function() {
+        let data = request.response;
+        resumoPedido(data.dados.id);
+  }; 
+}
+
+function resumoPedido(idProduto){
+    const numero = document.createTextNode(" " + idProduto);
+    console.log(idProduto);
+    const tag = document.getElementById('infoNumPedido');
+    tag.appendChild(numero);
+
+    var urlBoleto = "http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=" + idProduto;
+
+    const boleto = document.createTextNode(" " + urlBoleto);
+    const tag1 = document.getElementById('infoBoleto');
+    tag1.appendChild(boleto);
+
+    /* var texto = idProduto;
+    var hElement = document.createElement("H1");
+    var tElement = document.createTextNode(texto);
+    hElement.appendChild(tElement);
+    document.getElementById('resumoPedido').appendChild(hElement); */
+}
+
+/* Após a efetivação do pedido, deverá ser montada a tela de confirmação 
+    indicado o número do pedido efetuado. Neste ponto o carrinho de compras deve ser esvaziado. */

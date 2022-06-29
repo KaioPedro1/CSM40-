@@ -11,7 +11,6 @@ const loja_pedido_item_URL = "http://loja.buiar.com/?key=35xkr4&f=json&c=item&t=
 const googleSearchURL = "https://customsearch.googleapis.com/customsearch/v1?cx=57045d6ec622c4289&searchType=image&key=AIzaSyB8XoAfOHeb5aS4odsWv9yTFvc9S0GadAE&num=1&q="
 
 
-
 var lista_produtos
 var lista_categoria
 var lista_marcas
@@ -71,7 +70,7 @@ document.addEventListener("DOMContentLoaded", ()=>
     let selectAnoFipe = document.getElementById('selectAnoFipe');
     selectAnoFipe.addEventListener('change',preencheCampoPreco);
 })
-
+//2 funçoes da biblioteca do google para gerar a tabela
 function drawProdutoChart(){
     let dadosTratados=[];
     var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
@@ -130,6 +129,7 @@ function drawCategoriaChart(){
     tabela.setDataTable(dadosTabela);
     tabela.draw();
 }
+//2 funções para gerar o historico de pedido
 function detalhes_pedidos(id, obj){
     detalhesHTML = document.getElementById('detalhes_pedidos');
     itensHTML = document.getElementById('detalhes_pedidos_item')
@@ -195,6 +195,7 @@ function gera_pedidos(){
 
     }
 } 
+
 function criaBotao(value, name, id, funcName){
     if(funcName=='alterarCategoria'){
         return `<input type="button" class="btn btn-secondary" value=${value} name=${name} id=${id} onclick="${funcName}(this.id)"data-bs-toggle="modal" data-bs-target="#modal_categoria"/>`
@@ -216,6 +217,7 @@ function tratamentoProdutos(dados2){
     }
     return dados
 }
+//7 funções para o crud, poderia ser reduzida
 function removerCategoria(intID){
     let varURL = loja_remover_cate_URL+JSON.stringify(intID);
     let request = new XMLHttpRequest();
@@ -372,7 +374,7 @@ function adicionarProduto(e)
     }
 }
     
-
+//5 funções para preencher os campos da tabela fipe
 function preencheFormAlterarProduto(id){
     document.getElementById('modal_alterar_produtos').innerText='Alterar produto '+id
     for(let k = 0; k<lista_produtos.dados.length; k++){

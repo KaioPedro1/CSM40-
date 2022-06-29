@@ -1,4 +1,3 @@
-
 .div1{
   height: 100%;
   width: 10%;
@@ -30,6 +29,35 @@
 #containerSubtotal h5{
   margin-top:0.5rem;
 }
+
+.dadosCliente{
+  display : flex;
+  padding: 5px;
+}
+
+/* .dadosCliente > elementoForm{
+  flex: 1 1 auto;
+  text-align: center;
+  margin: 5px;
+} */
+
+.dadosCliente2{
+  display : flex;
+  padding: 5px;
+}
+
+/* .dadosCliente2 > elementoForm{
+  flex: 1 1 auto;
+  text-align: center;
+  margin: 5px;
+}
+ */
+
+ .dadosCliente3{
+  display : flex;
+  padding: 5px;
+}
+
 /*.produto p {
     background-color: #888a85;
     color: whitesmoke;
