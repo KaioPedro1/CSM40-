@@ -504,6 +504,7 @@ function nChamadasDeInsercao(idPedido){
     for (var i = 0; i < carrinho.produto.length; i++){
         insereItensPedido(i, idPedido);
     }
+    telaFinalPedido(idPedido);
 }
 
 /* Insere itens no pedido */
@@ -518,7 +519,6 @@ function insereItensPedido(i, idPedido){
     request.onload = function() {
         let data = request.response;
   }; 
-  telaFinalPedido(idPedido);
 }
 
 /* Tela final com a informação do id do pedido */
