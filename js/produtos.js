@@ -8,19 +8,21 @@ var btn = document.getElementById("buscaPedido");
 var requestUrl;
 var id;
 
-/* variaveis globais*/
+/* variaveis globais, não é o ideal, mas é o que tem para hoje*/
 var lista_produtos
 var lista_categorias
 var categoria_hash_map = new Map()
 var carrinho;
 var dadosCliente = [];
 
-/* treinando async, await, fetch e promise, aqui é a mesa ideia que utilizar o XMLhttpRequest*/
+/* treinando async, await, fetch e promise, aqui é a mesma ideia que utilizar o XMLhttpRequest*/
 async function getData(){
+    //instancia um objeto do tipo Carrinho
     carrinho = new Carrinho();
+    //preenche lista de produtos
     let responseProduto = await fetch(listar_produto_URL);
     lista_produtos = await responseProduto.json();
-
+    //preenche lista de categorias
     let responseCategoria = await fetch(listar_categoria_URL);
     lista_categorias = await responseCategoria.json();
 
@@ -32,6 +34,7 @@ async function getData(){
 document.addEventListener("DOMContentLoaded", async () =>{
         await getData();
         tratamentoProdutos();
+        //cria um elemento HTML para cada item da lista de produto
         for(let k=0; k<lista_produtos.dados.length;k++){
             criaCatalogoHTML(lista_produtos.dados[k])
         }
@@ -46,7 +49,7 @@ function tratamentoProdutos(){
         lista_produtos.dados[k].preco = parseInt(lista_produtos.dados[k].preco).toLocaleString('pt-br', formato)
     }
 }
-//2 funcões chamada no carregamento da pagina
+//2 funcões para criar os elementos html do produto e a lista no offcanvas do carrinho, são chamadas depois do carregamento dos elementos html
 function criaCatalogoHTML(dadosProdutos){
     let newSection = document.createElement('section');
     newSection.classList.add("produto");
@@ -262,10 +265,11 @@ function verificaFiltroMarcaExiste(cat){
 //duas classes principais
 class Carrinho{
     constructor(){
-        //array de produtoCarrinho
+        
         this.HTMLimgCarrinho=document.getElementById('imagemCarrinho');
         this.HTMLcarrinhoQTD= document.getElementById('carrinhoContador');
-        this.HTMLcarrinhoSubtotal = document.getElementById('carrinho_subtotal')
+        this.HTMLcarrinhoSubtotal = document.getElementById('carrinho_subtotal');
+        //array de produtoCarrinho
         this.produto = [];
         this.is_empty = true;
     } 
@@ -313,6 +317,7 @@ class Carrinho{
                     //instancia um objeto da classe ProdutoCarrinho usando o outro objeto da lista global
                     let prod = Object.assign(new ProdutoCarrinho(), lista_produtos.dados[k]);
                     this.produto.push(prod);
+                    //adiciona um elemento HTML no offcanvas
                     criaCarrinhoOffcanvasHTML(prod)
                 }
             }  
@@ -395,6 +400,7 @@ class ProdutoCarrinho{
         }
     }
     getPrecoTotal(){
+        
         let preco = this.preco.split('R$')[1].split('.').join('').split(',').join('.');
         return (this.quantidade*preco);
     }
@@ -442,7 +448,7 @@ function enviaRequisicao(){
     + encodeURI(dadosCliente[0].logradouro) + "&cidade=" + encodeURI(dadosCliente[0].localidade) + numCliente + complCliente;
     console.log(RequisicaoURL);
     let request = new XMLHttpRequest();
-    request.open('GET', RequisicaoURL);
+    request.open('POST', RequisicaoURL);
     request.responseType = 'json';
     request.send();
     request.onload = function() {
@@ -512,13 +518,14 @@ function insereItensPedido(i, idPedido){
     const insereItensURL = "http://loja.buiar.com/?key=35xkr4&c=item&t=inserir&f=json&pedido="+ idPedido +"&produto=" + carrinho.produto[i].id + "&qtd=" + carrinho.produto[i].quantidade;
     console.log(insereItensURL)
     let request = new XMLHttpRequest();
-    request.open('GET', insereItensURL);
+    request.open('POST', insereItensURL);
     request.responseType = 'json';
     request.send();
     request.onload = function() {
         let data = request.response;
+        telaFinalPedido(idPedido);
   }; 
-  telaFinalPedido(idPedido);
+  
 }
 
 /* Tela final com a informação do id do pedido */

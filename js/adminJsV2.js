@@ -44,6 +44,8 @@ const loadData = async () =>{
     genericaPreencheSelection('selectCategoria',lista_categoria.dados);
     genericaPreencheSelection('selectMarca',lista_marcas, preencheSelectionNome, 'selectAnoFipe');
 
+
+
 };loadData();
 /*removendo envio automatico do formulario por url e setando eventos*/
 document.addEventListener("DOMContentLoaded", ()=>
@@ -92,7 +94,7 @@ function drawProdutoChart(){
                     'width': '100%'
                 }
               });
-    //juntaod o filtro categoria para a tabela
+    //juntaod o filtro categoria com a tabela
     dashboard.bind([filtro_categoria],tabela);
 
     let cabecalho = ['Id', 'Codigo', 'Categoria', 'Nome', 'Descricao', 'Preco', 'URL ou caminho imagem', 'Peso', 'Eventos/Açoes']
@@ -132,42 +134,18 @@ function drawCategoriaChart(){
     tabela.draw();
 }
 //2 funções para gerar o historico de pedido
+//preenche os detalhes do pedido nas duas divs da direita
 function detalhes_pedidos(id, obj){
     detalhesHTML = document.getElementById('detalhes_pedidos');
-    itensHTML = document.getElementById('detalhes_pedidos_item')
+    itensHTML = document.getElementById('detalhes_pedidos_item');
+    //limpa as divs html
     while (detalhesHTML.firstChild) {
         detalhesHTML.firstChild.remove();
     }
     while (itensHTML.firstChild) {
         itensHTML.firstChild.remove();
     }
-    fetch(loja_pedido_item_URL+id).then(res => res.json()).then(data=>{
-        let item= document.createElement('div');
-        item.classList.add("row");
-        if(data.dados.length==0){
-            item.innerText="Pedido não possui nenhum item vinculado ao seu id!"
-        }else{
-            let preco = 0
-            for(let j=0; j<data.dados.length; j++){
-                for(let i = 0; i<lista_produtos.dados.length; i++){
-                    if(data.dados[j].produto==lista_produtos.dados[i].id){
-                        data.dados[j].produto=lista_produtos.dados[i].nome;
-                        preco=parseFloat(lista_produtos.dados[i].preco)
-                        break;
-                    }
-                }
-                item.innerHTML=`<h4>Item número: ${data.dados[j].id}</h4>
-                <p>Pedido:${data.dados[j].pedido}</p></hr>
-                <p>Produto:${data.dados[j].produto}</p></hr>
-                <p>Quantidade:${data.dados[j].qtd}</p></hr>
-                <p>Valor total:${(preco*data.dados[j].qtd).toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})}</p></hr>
-                <a href="http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=${data.dados[j].pedido}" target="_blank">Link para o boleto</a>
-                `
-            }
-        }
-        itensHTML.appendChild(item)
-        itensHTML.appendChild(document.createElement('hr'))
-    })
+    //loop pelo objeto para inserir as informações na div de detalhes do pedido
     Object.entries(obj).forEach(([key, value]) => 
     {
         let novoElemento = document.createElement('div');
@@ -176,8 +154,46 @@ function detalhes_pedidos(id, obj){
         detalhesHTML.appendChild(novoElemento)
         detalhesHTML.appendChild(document.createElement('hr'))
     });
+    //requisição assincrona para coleta dos itens do pedido, data é a resposta em json, depois de obter os dados é feita a criação dos elementos na div detalhes do produto
+    fetch(loja_pedido_item_URL+id).then(res => res.json()).then(data=>{
+        //caso não tenha nenhuma inserção de item
+        if(data.dados.length==0){
+            let item= document.createElement('div');
+            item.classList.add("row");
+            item.innerText="Pedido não possui nenhum item vinculado ao seu id!"
+            itensHTML.appendChild(item)
+            itensHTML.appendChild(document.createElement('hr'))
+        }else{
+            let preco = 0
+            for(let j=0; j<data.dados.length; j++){
+                //loop para achar o nome do produto pelo id
+                for(let i = 0; i<lista_produtos.dados.length; i++){
+                    if(data.dados[j].produto==lista_produtos.dados[i].id){
+                        data.dados[j].produto=lista_produtos.dados[i].nome;
+                        preco=parseFloat(lista_produtos.dados[i].preco)
+                        break;
+                    }
+                }
+                //cria html para inserir no itensHTML
+                let item= document.createElement('div');
+                item.classList.add("row");
+                item.innerHTML=`<h4>Item número: ${data.dados[j].id}</h4>
+                <p>Pedido:${data.dados[j].pedido}</p></hr>
+                <p>Produto:${data.dados[j].produto}</p></hr>
+                <p>Quantidade:${data.dados[j].qtd}</p></hr>
+                <p>Valor total:${(preco*data.dados[j].qtd).toLocaleString('pt-br', { style: 'currency', currency: 'BRL'})}</p></hr>
+                <a href="http://loja.buiar.com/?key=35xkr4&c=boleto&t=listar&id=${data.dados[j].pedido}" target="_blank">Link para o boleto</a>
+                `    
+                itensHTML.appendChild(item)
+                itensHTML.appendChild(document.createElement('hr'))
+            }
+        }
+    
+    })
+    
 
 }
+//gera os pedidos na div da esquerda da tela
 function gera_pedidos(){
     lista_pedidosHTML = document.getElementById('lista_pedidos');
     while (lista_pedidosHTML.firstChild) {
@@ -195,9 +211,9 @@ function gera_pedidos(){
         Cliente:${lista_pedidos[k].nome}, CPF: ${lista_pedidos[k].cpf}, CEP: ${lista_pedidos[k].cep}
         </div>`
         lista_pedidosHTML.appendChild(novoElemento)
-
     }
 } 
+
 //2 funcoes de utilidades
 function criaBotao(value, name, id, funcName){
     if(funcName=='alterarCategoria'){
@@ -220,7 +236,7 @@ function tratamentoProdutos(dados2){
     }
     return dados
 }
-//7 funções para o crud, poderia ser reduzida
+//7 funções para o crud, pode ser reduzido, mas para facilitar a legibilidade vai ser assim mesmo
 function removerCategoria(intID){
     let varURL = loja_remover_cate_URL+JSON.stringify(intID);
     let request = new XMLHttpRequest();
@@ -242,7 +258,6 @@ function removerProduto(intID){
     }
 }
 function atualizaLista(tipo){
-   
     if(tipo=='categoria'){
         fetch(loja_categoria_URL).then(res => res.json()).then(data=>{
             lista_categoria=data 
@@ -268,19 +283,19 @@ function alterarProduto(e){
     let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=alterar";
     let temp = Array.from(e.target.elements);
     var obj_backEnd = new dadosBackend(temp, document.getElementById('modal_alterar_produtos').innerText.split(' ')[2]);
+    //cria a url 
     Object.entries(obj_backEnd).forEach(([key, value]) => 
     {
             varURL= varURL.concat('&'+key+'='+value);   
     });
+    console.log(varURL)
     let requestXML = new XMLHttpRequest();
     requestXML.open('POST', varURL);
     requestXML.responseType='json';
     requestXML.send();
     requestXML.onload=function()
     {
-        
         for(let k = 0; k<lista_produtos.dados.length;k++){
-         
             if(lista_produtos.dados[k].id == obj_backEnd.id){
                 lista_produtos.dados[k]=obj_backEnd;
                 drawProdutoChart();
@@ -291,6 +306,7 @@ function alterarProduto(e){
 }
 function adicionarCategoria(e){
     e.preventDefault();
+    //condicional para verificar qual botão foi pressionado, reutilizei essa função pq só tem um campo para alterar na categoria
     if(document.getElementById('categoria_btn_enviar').innerText=='Alterar'){
         let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=alterar&id="+document.getElementById('exampleModalLabel').innerText.split(' ')[2]+'&nome=';
         let temp = e.target.elements;
@@ -313,6 +329,7 @@ function adicionarCategoria(e){
     else{
         let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=categoria&t=inserir&nome=";
         let temp = e.target.elements;
+        //só tem 1 elemento para ser alterado
         varURL+=temp[0].value;
         let request = new XMLHttpRequest();
         request.open('POST', varURL);
@@ -326,10 +343,7 @@ function adicionarCategoria(e){
                 }
             drawCategoriaChart();
         }
-    }
-  
-
-    
+    }    
 }
 function adicionarProduto(e)
 {
@@ -337,6 +351,7 @@ function adicionarProduto(e)
     let varURL = "http://loja.buiar.com/?key=35xkr4&f=json&c=produto&t=inserir";
     let temp = Array.from(e.target.elements);
     var obj_backEnd = new dadosBackend(temp);
+    //gera  url sem a imagem, pois ela é trada logo abaixo
     Object.entries(obj_backEnd).forEach(([key, value]) => 
     {
         if(key!='id' && key!='imagem')
@@ -344,8 +359,9 @@ function adicionarProduto(e)
             varURL= varURL.concat('&'+key+'='+value);   
         }
     });    
-    
+    //se o campo de imagem não for preenchido, pega do google imagens usando a api google search engine
     if(obj_backEnd.imagem==undefined || obj_backEnd.imagem ==""){
+        //requisição assincrona para pegar uma imagem do google do veiculo
         fetch(googleSearchURL+obj_backEnd.nome).then(res => res.json()).then(data=>{
             obj_backEnd.imagem = data.items[0].link;
             varURL= varURL.concat('&imagem'+'='+obj_backEnd.imagem);
@@ -355,14 +371,15 @@ function adicionarProduto(e)
             requestXML.send();
             requestXML.onload=function()
             {
-            obj_backEnd.id=requestXML.response.dados.id;
-            lista_produtos.dados.push(obj_backEnd);
-            drawProdutoChart();
+                obj_backEnd.id=requestXML.response.dados.id;
+                lista_produtos.dados.push(obj_backEnd);
+                drawProdutoChart();
             }
         })
     }
     else
-    {   obj_backEnd.imagem = 'imagens/veiculos/'+obj_backEnd.imagem;
+    {   
+        obj_backEnd.imagem = 'imagens/veiculos/'+obj_backEnd.imagem;
         varURL= varURL.concat('&imagem'+'='+obj_backEnd.imagem); 
         let request = new XMLHttpRequest();
         request.open('POST', varURL);
@@ -499,33 +516,26 @@ function preencheCampoPreco(e){
 }
 //teste criminoso
 class dadosBackend{
+    //não da pra criar dois construtores nessa linguagem, por isso tem essa condicional para verificar se a chamada é para alterar ou somente inserir, acho que não faz sentido criar uma classe para isso, fiz assim só para testar mesmo
     constructor(arrayForm, alterarID){
         if(alterarID){
         this.id=alterarID;
-        this.codigo=arrayForm[5].value;
-        this.categoria=arrayForm[4].value;
         this.nome=arrayForm[1].value;
-        //usei o objeto global ao invés do formulario, pode dar problema
         this.descricao=arrayForm[0].value+", Ano modelo: "+arrayForm[2].value.split(' ')[0]+ ", Combustível: "+arrayForm[2].value.split(' ')[1]+", "+arrayForm[9].value;
-         //todo
         this.preco=parseFloat(arrayForm[3].value);
-        this.imagem = arrayForm[7].value
-        //
-        this.peso=arrayForm[6].value;
+        this.imagem = arrayForm[7].value;
         }
         else
         {
         this.id=null;
-        this.codigo=arrayForm[5].value;
-        this.categoria=arrayForm[4].value;
         this.nome=arrayForm[1].options[arrayForm[1].selectedIndex].textContent;
         //usei o objeto global ao invés do formulario, pode dar problema
         this.descricao=obj_veiculo.Marca+", Ano modelo: "+obj_veiculo.AnoModelo+ ", Combustível: "+obj_veiculo.Combustivel+", "+arrayForm[9].value;
-         //todo
         this.preco=parseFloat(arrayForm[3].value.split('R$ ')[1].split('.').join('').split(',').join('.'));
         this.imagem = arrayForm[7].value.split('\\')[2]
-        //
-        this.peso=arrayForm[6].value;
         }
+        this.codigo=arrayForm[5].value;
+        this.categoria=arrayForm[4].value;
+        this.peso=arrayForm[6].value;
     }
 }
