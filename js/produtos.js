@@ -400,7 +400,7 @@ class ProdutoCarrinho{
         }
     }
     getPrecoTotal(){
-        
+
         let preco = this.preco.split('R$')[1].split('.').join('').split(',').join('.');
         return (this.quantidade*preco);
     }
@@ -510,6 +510,7 @@ function nChamadasDeInsercao(idPedido){
     for (var i = 0; i < carrinho.produto.length; i++){
         insereItensPedido(i, idPedido);
     }
+    telaFinalPedido(idPedido);
 }
 
 /* Insere itens no pedido */
@@ -525,7 +526,6 @@ function insereItensPedido(i, idPedido){
         let data = request.response;
         telaFinalPedido(idPedido);
   }; 
-  
 }
 
 /* Tela final com a informação do id do pedido */
