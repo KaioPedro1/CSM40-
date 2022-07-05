@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="js/paginaInicial.js"></script>
+  <script src="js/paginaInicial.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
@@ -46,31 +46,31 @@
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <div class="overlay_image" style="background-image:url(imagens/logo2.svg);"></div>
+      <div class="overlay_image" style="background-image:url(imagens/logo3estoque.svg);"></div>
       <div class="carousel-caption d-none d-md-block">
       <a href="produtos.html" class="btn btn-dark">Confira o nosso estoque!</a>
       </div>
     </div>
     <div class="carousel-item">
-      <div class="overlay_image"  style="background-image:url(imagens/logo3.svg);"></div>
+      <div class="overlay_image"  style="background-image:url(imagens/logo2contato.svg);"></div>
       <div class="carousel-caption d-none d-md-block">
-      <a class="btn btn-dark">Dúvidas? Entre em contato.</a>
+      <a href="contato.html"class="btn btn-dark">Dúvidas? Entre em contato.</a>
     </div>
     </div>
     <div class="carousel-item">
-      <video autoplay muted loop id="tocaMandelao">
+      <video autoplay muted loop class="video_bg" id="tocaMandelao">
         <source src="imagens/mandelao.mp4" type="video/mp4">
       </video>
       <div class="carousel-caption d-none d-md-block">
-        <button class="btn btn-dark">Toca mandelao</button>
+        <button class="btn btn-dark" onclick="teste()">Toca mandelao</button>
       </div>
   </div>
   <div class="carousel-item">
-    <video autoplay muted loop id="tocaMandelao">
+    <video autoplay muted loop class="video_bg" >
       <source src="imagens/backgroundteste.mp4" type="video/mp4">
     </video>
     <div class="carousel-caption d-none d-md-block">
-      <button class="btn btn-dark">Video muito grande</button>
+      <button class="btn btn-dark">Teste video</button>
     </div>
 </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
