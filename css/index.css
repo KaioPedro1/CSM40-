@@ -18,9 +18,12 @@
 }
 .carousel-item{
 	width: 100%;
-	height: 50rem;
-	position: relative;
+	height: 90vh;
+	position: relative;	
   	background-color: #343438;
+}
+body{
+	background-color: #343438;
 }
   .overlay_image{
 	position: absolute;
