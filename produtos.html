@@ -32,7 +32,6 @@
       <li><a href="contato.html">Contato</a></li>
       <li><a href="pedidos.html">Pedidos</a></li>
       <li><a href="administracao.html">Administração</a></li>
-      <li><a href="login.html">Login</a></li>
     </ul>
   </nav>
   <!--BOTAO CARRINHO CANTO INFERIOR ESQUERDO-->
@@ -41,13 +40,12 @@
       ondragover="allowdrop(event)" ondrop="drop(event)">
       <img id=imagemCarrinho src="imagens/cart.svg" alt="carrinho">
       <span class="position-absolute translate-middle badge rounded-pill text-bg-danger" id="carrinhoContador">
-        0
       </span>
     </button>
   </div>
   <!--OFFCANVAS CARRINHO-->
   <aside>
-    <div class="offcanvas offcanvas-end w-25" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas offcanvas-end w-55" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
       <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title" id="offcanvasRightLabel">
           <h1>Carrinho</h1>
@@ -58,7 +56,6 @@
       <div class="offcanvas-body">
         <div class="container h-75" id="carrinhoProdutos" style=" overflow: scroll;">
         </div>
-
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
             <div id="containerSubtotal">
@@ -73,8 +70,8 @@
           </div>
         </footer>
       </div>
-
   </aside>
+
   <!--CONFIRMACAO DE PEDIDO-->
   <aside>
     <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight2"
@@ -86,62 +83,64 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <!-- DADOS DO CLIENTE -->
+      <!-- DADOS PREENCHIDO PELO CLIENTE -->
       <div class="offcanvas-body">
-        <div class="container h-90">
-          <div class="dadosCliente" id="clientePreenche">
-            <div class="form-group col-md-3" id="elementoForm1">
-              <label for="inputNome">Nome</label>
-              <input type="text" class="form-control" id="nome" placeholder="Nome">
+        <div class="container h-75" style=" overflow: scroll;">
+            <div class="dadosCliente" id="clientePreenche">
+              <div class="form-group col-md-3" id="elementoForm1">
+                <label for="inputNome">Nome</label>
+                <input type="text" class="form-control" id="nome" placeholder="Nome">
+              </div>
+              <div class="form-group col-md-3" id="elementoForm2">
+                <label for="inputCPF">CPF</label>
+                <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" maxlength="11">
+              </div>
+              <div class="form-group col-md-3" id="elementoForm3">
+                <label for="inputCEP">CEP</label>
+                <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000-000" maxlength="8">
+              </div>
+              <input type='button' value='Buscar' onClick='buscarCep()' id="elementoForm4">
             </div>
-            <div class="form-group col-md-3" id="elementoForm2">
-              <label for="inputCPF">CPF</label>
-              <input type="text" class="form-control" id="cpf" placeholder="00000000000">
+            <div class="dadosCliente2" id="clienteNaoPreenche">
+              <div class="form-group col-md-3" id="elementoForm5">
+                <label for="inputRua">Rua</label>
+                <input type="text" class="form-control" id="rua" readonly>
+              </div>
+              <div class="form-group col-md-3" id="elementoForm6">
+                <label for="inputBairro">Bairro</label>
+                <input type="text" class="form-control" id="bairro" readonly>
+              </div>
+              <div class="form-group col-md-3" id="elementoForm7">
+                <label for="inputCidade">Cidade</label>
+                <input type="text" class="form-control" id="cidade" readonly>
+              </div>
             </div>
-            <div class="form-group col-md-3" id="elementoForm3">
-              <label for="inputCEP">CEP</label>
-              <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000-000">
+            <div class="dadosCliente3" id="clientePreencheCompl">
+              <div class="form-group col-md-1" id="elementoForm8">
+                <label for="inputUF">UF</label>
+                <input type="text" class="form-control" id="uf" readonly>
+              </div>
+              <div class="form-group col-md-1" id="elementoForm9">
+                <label for="inputNum">Numero</label>
+                <input type="text" class="form-control" id="numero">
+              </div>
+              <div class="form-group col-md-3" id="elementoForm10">
+                <label for="inputCompl">Complemento</label>
+                <input type="text" class="form-control" id="complemento">
+              </div>
             </div>
-            <input type='button' value='Buscar' onClick='buscarCep()' id="elementoForm4">
-          </div>
-          <div class="dadosCliente2" id="clienteNaoPreenche">
-            <div class="form-group col-md-3" id="elementoForm5">
-              <label for="inputRua">Rua</label>
-              <input type="text" class="form-control" id="rua" readonly>
-            </div>
-            <div class="form-group col-md-3" id="elementoForm6">
-              <label for="inputBairro">Bairro</label>
-              <input type="text" class="form-control" id="bairro" readonly>
-            </div>
-            <div class="form-group col-md-3" id="elementoForm7">
-              <label for="inputCidade">Cidade</label>
-              <input type="text" class="form-control" id="cidade" readonly>
-            </div>
-          </div>
-          <div class="dadosCliente3" id="clientePreencheCompl">
-            <div class="form-group col-md-1" id="elementoForm8">
-              <label for="inputUF">UF</label>
-              <input type="text" class="form-control" id="uf" readonly>
-            </div>
-            <div class="form-group col-md-1" id="elementoForm9">
-              <label for="inputNum">Numero</label>
-              <input type="text" class="form-control" id="numero">
-            </div>
-            <div class="form-group col-md-3" id="elementoForm10">
-              <label for="inputCompl">Complemento</label>
-              <input type="text" class="form-control" id="complemento">
-            </div>
-          </div>
-        </div>
+        </div>    
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
             <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight3"
               aria-controls="offcanvasRight3" ondragover="allowdrop(event)" ondrop="drop(event)"
-              onClick="armazenaDadosForms(); resumoDadosEPedidos();">Avançar</BUtton>
+              onClick="armazenaDadosForms()">Avançar</BUtton>
           </div>
         </footer>
       </div>
+    </div>
   </aside>
+
   <!-- Resumo informações do cliente e pedido -->
   <aside>
     <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight3"
@@ -155,17 +154,7 @@
       </div>
       <div class="offcanvas-body">
         <div class="container h-75" id="resumoDadosCliente" style=" overflow: scroll;">
-          <h4>Compra</h4>
-          <p id="infoNomeProd"><b>Produto:</b></p>
-          <p id="infoDescricao"><b>Descrição:</b></p>
-          <p id="infoPreco"><b>Preço:</b></p>
-          <p id="infoQuantidade"><b>Quantidade:</b></p>
-          <h4>Seus dados</h4>
-          <p id="infoNomeCliente"><b>Nome:</b></p>
-          <p id="infoCPF"><b>CPF:</b></p>
-          <p id="infoCEP"><b>CEP:</b></p>
-          <p id="infoEndereco"><b>Endereço:</b></p>
-          <p id="infoComplemento"><b>Complemento:</b></p>
+            <!-- AQUI FICA AS INFORMAÇÕES DO CLIENTE E DA COMPRA -->
         </div>
         <footer class="position-absolute bottom-0" style="width: 95%; height: 20%; overflow: auto;">
           <div class="btn-group-vertical d-flex flex-column align-items-center gap-2">
@@ -175,11 +164,12 @@
             </div>
             <BUtton class="p-2 btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight4"
               aria-controls="offcanvasRight4" ondragover="allowdrop(event)" ondrop="drop(event)"
-              onclick="enviaRequisicao()">Confirmar Pedido</BUtton>
+              onclick="limpaTelaResumo();">Confirmar Pedido</BUtton>
           </div>
         </footer>
       </div>
   </aside>
+
   <!-- TELA DE CONFIRMAÇÃO -->
   <aside>
     <div class="offcanvas offcanvas-end w-100" tabindex="-1" id="offcanvasRight4"
@@ -206,6 +196,7 @@
         </footer>
       </div>
   </aside>
+  
   <!--CONTEUDO PRINCIPAL, CATALOGO-->
   <main class="container-fluid">
     <br>
@@ -229,11 +220,7 @@
       </div>
       <!--SECAO PRINCIPAL COM OS PRODUTOS INSERIDOS VIA JS-->
       <section id="produtos" class="card mb-3 col-10"></section>
-
     </div>
-
-
   </main>
 </body>
-
 </html>

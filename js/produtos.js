@@ -8,12 +8,11 @@ var btn = document.getElementById("buscaPedido");
 var requestUrl;
 var id;
 
-/* variaveis globais, não é o ideal, mas é o que tem para hoje*/
+/* variaveis globais */
 var lista_produtos
 var lista_categorias
 var categoria_hash_map = new Map()
 var carrinho;
-var dadosCliente = [];
 
 /* treinando async, await, fetch e promise, aqui é a mesma ideia que utilizar o XMLhttpRequest*/
 async function getData(){
@@ -262,6 +261,7 @@ function verificaFiltroMarcaExiste(cat){
     }
     return false;
 }
+
 //duas classes principais
 class Carrinho{
     constructor(){
@@ -375,6 +375,7 @@ class Carrinho{
         this.HTMLcarrinhoSubtotal.innerText=this.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
     }
 }
+
 class ProdutoCarrinho{
     constructor(){
         this.quantidade=1;
@@ -415,37 +416,39 @@ function buscarCep() {
     request.responseType = 'json';
     request.send();
     request.onload = function() {
-        dadosCliente.push(request.response);
-        console.log(dadosCliente);
-        rua.value = dadosCliente[0].logradouro;
-        bairro.value = dadosCliente[0].bairro;
-        cidade.value = dadosCliente[0].localidade;
-        uf.value = dadosCliente[0].uf;
+        //dadosCliente.push(request.response);
+        dados = request.response;
+        rua.value = dados.logradouro;
+        bairro.value = dados.bairro;
+        cidade.value = dados.localidade;
+        uf.value = dados.uf;
     };
 }
 
+var infoCliente;
+
 /* Coloca informações do input do formulario em dadosCliente */
 function armazenaDadosForms(){
+    var dadosCliente = [];
     nomeInput = document.getElementById("nome").value
     cpfInput = document.getElementById("cpf").value
-    dadosCliente.push({nome: nomeInput, cpf: cpfInput});
-    console.log(dadosCliente);
+    cepInput = document.getElementById("cep").value
+    ruaInput = document.getElementById("rua").value
+    bairroInput = document.getElementById("bairro").value
+    cidadeInput = document.getElementById("cidade").value
+    ufInput = document.getElementById("uf").value
     numInput = document.getElementById("numero").value
     complInput = document.getElementById("complemento").value
-    dadosCliente.push({numero: numInput, complemento: complInput});
+    dadosCliente.push({nome: nomeInput, cpf: cpfInput, cep: cepInput, rua: ruaInput, bairro: bairroInput, cidade: cidadeInput, uf: ufInput, numero: numInput, complemento: complInput});
+    infoCliente = dadosCliente;
+    resumoDadosEPedidos(dadosCliente);
 }
 
 /* Envia a requisicao para o backend */
-function enviaRequisicao(){
-    nomeCliente = document.getElementById("nome").value + "&";
-    nomeCliente = encodeURI(nomeCliente);
-    cpfCliente = "cpf=" + document.getElementById("cpf").value + "&cep=";
-    numCliente = "&numero=" + document.getElementById("numero").value + "&";
-    complCliente = "complemento=" + document.getElementById("complemento").value;
-    
-    const RequisicaoURL = "http://loja.buiar.com/?key=35xkr4&c=pedido&t=inserir&f=json&nome=" + nomeCliente + cpfCliente + dadosCliente[0].cep 
-    + "&rua=" + encodeURI(dadosCliente[0].logradouro) + "&bairro=" + encodeURI(dadosCliente[0].bairro) + "&uf=" + dadosCliente.uf + "&rua=" 
-    + encodeURI(dadosCliente[0].logradouro) + "&cidade=" + encodeURI(dadosCliente[0].localidade) + numCliente + complCliente;
+function enviaRequisicao(){   
+    const RequisicaoURL = "http://loja.buiar.com/?key=35xkr4&c=pedido&t=inserir&f=json&nome=" + infoCliente[0].nome + "&cpf=" + infoCliente[0].cpf + "&cep=" + infoCliente[0].cep 
+    + "&rua=" + encodeURI(infoCliente[0].rua) + "&bairro=" + encodeURI(infoCliente[0].bairro) + "&uf=" + infoCliente[0].uf + "&cidade=" + encodeURI(infoCliente[0].cidade) 
+    + "&numero=" + infoCliente[0].numero + "&complemento=" +infoCliente[0].complemento;
     console.log(RequisicaoURL);
     let request = new XMLHttpRequest();
     request.open('POST', RequisicaoURL);
@@ -460,53 +463,103 @@ function enviaRequisicao(){
 }
 
 /* Mostra resumo dados do cliente e pedido */
-function resumoDadosEPedidos(){
-    console.log(dadosCliente);
-    /* Info do pedido */
-    for (var i = 0; i < carrinho.produto.length; i++){
-        const texto1 = document.createTextNode(" " + carrinho.produto[i].nome + "; ");
-        const tag1 = document.getElementById('infoNomeProd');
-        tag1.appendChild(texto1);
+function resumoDadosEPedidos(dadosCliente){
+    var tag0 = document.createElement("h3");
+    var text0 = document.createTextNode("Compra");
+    tag0.appendChild(text0);
 
-        const texto2 = document.createTextNode(" " + carrinho.produto[i].descricao + "; ");
-        const tag2 = document.getElementById('infoDescricao');
-        tag2.appendChild(texto2);
+    var telaResumo = document.getElementById("resumoDadosCliente");
 
-        const texto3 = document.createTextNode(" " + carrinho.produto[i].preco + "; ");
-        const tag3 = document.getElementById('infoPreco');
-        tag3.appendChild(texto3);
+    telaResumo.appendChild(tag0);
 
-        const texto4 = document.createTextNode(" " + carrinho.produto[i].quantidade + "; ");
-        const tag4 = document.getElementById('infoQuantidade');
-        tag4.appendChild(texto4);
+    for (var i = 1; i <= carrinho.produto.length; i++){
+        /* Todas infos do pedido */
+        var tag1 = document.createElement("p");
+        var text1 = document.createTextNode("Produto (" + i + "): " + carrinho.produto[i-1].nome);
+        tag1.appendChild(text1);
+
+        var tag2 = document.createElement("p");
+        var text2 = document.createTextNode("Descrição: " +  carrinho.produto[i-1].descricao);
+        tag2.appendChild(text2);
+
+        var tag3 = document.createElement("p");
+        var text3 = document.createTextNode("Preço: " + carrinho.produto[i-1].preco);
+        tag3.appendChild(text3);
+
+        var tag4 = document.createElement("p");
+        var text4 = document.createTextNode("Quantidade: " + carrinho.produto[i-1].quantidade);
+        tag4.appendChild(text4);
+
+        telaResumo.appendChild(tag1);
+        telaResumo.appendChild(tag2);
+        telaResumo.appendChild(tag3);
+        telaResumo.appendChild(tag4);
     }
-    /* info do cliente */
-    const texto5 = document.createTextNode(" " + dadosCliente[1].nome);
-    const tag5 = document.getElementById('infoNomeCliente');
-    tag5.appendChild(texto5);
 
-    const texto6 = document.createTextNode(" " + dadosCliente[1].cpf);
-    const tag6 = document.getElementById('infoCPF');
-    tag6.appendChild(texto6);
+    var tag1 = document.createElement("h3");
+    var text1 = document.createTextNode("Seus dados");
+    tag1.appendChild(text1);
 
-    const texto7 = document.createTextNode(" " + dadosCliente[0].cep);
-    const tag7 = document.getElementById('infoCEP');
-    tag7.appendChild(texto7);
+    /* Todas infos do cliente */
+    var tag5 = document.createElement("p");
+    var text5 = document.createTextNode("Nome: " + dadosCliente[0].nome);
+    tag5.appendChild(text5);
+    
 
-    const texto8 = document.createTextNode(" " + dadosCliente[0].logradouro + ", " + dadosCliente[0].bairro + " - " + dadosCliente[0].localidade + ", " + dadosCliente[0].uf);
-    const tag8 = document.getElementById('infoEndereco');
-    tag8.appendChild(texto8);
+    var tag6 = document.createElement("p");
+    var text6 = document.createTextNode("CPF: " + dadosCliente[0].cpf);
+    tag6.appendChild(text6);
 
-    const texto9 = document.createTextNode(" " + dadosCliente[2].numero + ", " + dadosCliente[2].complemento);
-    const tag9 = document.getElementById('infoComplemento');
-    tag9.appendChild(texto9);
 
-    const texto10 = document.createTextNode(carrinho.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'}));
-    const tag10 = document.getElementById('infoTotal');
-    tag10.appendChild(texto10);
+    var tag7 = document.createElement("p");
+    var text7 = document.createTextNode("CEP: " + dadosCliente[0].cep);
+    tag7.appendChild(text7);
+
+    var tag8 = document.createElement("p");
+    var text8 = document.createTextNode("Endereço: " + dadosCliente[0].rua + ", " + dadosCliente[0].bairro + " - " + dadosCliente[0].cidade + ", " + dadosCliente[0].uf);
+    tag8.appendChild(text8);
+    
+    var tag9 = document.createElement("p");
+    var text9 = document.createTextNode("Complemento: " + dadosCliente[0].numero + ", " + dadosCliente[0].complemento);
+    tag9.appendChild(text9);
+
+    document.getElementById('infoTotal').innerText = carrinho.getSubtotalCarrinho().toLocaleString('pt-br', { style: 'currency', currency: 'BRL'});
+
+    telaResumo.appendChild(tag1);
+    telaResumo.appendChild(tag5);
+    telaResumo.appendChild(tag6);
+    telaResumo.appendChild(tag7);
+    telaResumo.appendChild(tag8);
+    telaResumo.appendChild(tag9);
+}
+
+/* Limpa a tela de resumo dos dados e pedidos removendo as tags criadas anteriormente  */
+function limpaTelaResumo(){
+    /* 5 <p> dos dados do cliente */
+    for (var i = 0; i < 5; i++){
+        const elemento = document.querySelector("p:last-child");
+        elemento.parentElement.removeChild(elemento);
+    }
+
+    const elemento = document.querySelector("h3:last-child");
+    elemento.parentElement.removeChild(elemento);
+
+    /* 4 <p> dos dados da compra */
+    for (var i = 0; i < carrinho.produto.length; i++){
+        for (var j = 0; j < 4; j++){
+            const elemento = document.querySelector("p:last-child");
+            elemento.parentElement.removeChild(elemento);
+        }
+    }
+
+    const elemento1 = document.querySelector("h3");
+    elemento1.parentElement.removeChild(elemento1);
+
+    enviaRequisicao();
 }
 
 function nChamadasDeInsercao(idPedido){
+    console.log(carrinho.produto);
     for (var i = 0; i < carrinho.produto.length; i++){
         insereItensPedido(i, idPedido);
     }
@@ -522,16 +575,12 @@ function insereItensPedido(i, idPedido){
     request.open('POST', insereItensURL);
     request.responseType = 'json';
     request.send();
-    request.onload = function() {
-        let data = request.response;
-        telaFinalPedido(idPedido);
-  }; 
 }
 
 /* Tela final com a informação do id do pedido */
 function telaFinalPedido(idPedido){
     carrinho.limparCarrinho();
-    dadosCliente.length = 0 //Limpa array de dados do cliente
+    console.log(1);
     const numero = document.createTextNode(" " + idPedido);
     const tag = document.getElementById('infoNumPedido');
     tag.appendChild(numero);
@@ -541,4 +590,5 @@ function telaFinalPedido(idPedido){
     const boleto = document.createTextNode(" " + urlBoleto);
     const tag1 = document.getElementById('infoBoleto');
     tag1.appendChild(boleto);
+    console.log(2);
 }
