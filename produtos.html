@@ -93,11 +93,11 @@
               </div>
               <div class="form-group col-md-3" id="elementoForm2">
                 <label for="inputCPF">CPF</label>
-                <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" maxlength="11">
+                <input type="text" class="form-control is-invalid" id="cpf" placeholder="00000000000" maxlength="11" onkeyup="validacpf()" required>
               </div>
               <div class="form-group col-md-3" id="elementoForm3">
                 <label for="inputCEP">CEP</label>
-                <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000-000" maxlength="8">
+                <input type="text" class="form-control" id="cep" onChange='buscarCep()' placeholder="00000000" maxlength="8">
               </div>
               <input type='button' value='Buscar' onClick='buscarCep()' id="elementoForm4">
             </div>
