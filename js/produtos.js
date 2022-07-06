@@ -407,6 +407,20 @@ class ProdutoCarrinho{
     }
 } 
 
+const inputform = document.querySelector("#cpf");
+/*validaçao simples do cpf*/
+function validacpf(){
+    var value = document.getElementById("cpf").value;
+
+    if ( value.length < 11) {
+        inputform.classList.remove("is-valid");
+        inputform.classList.add("is-invalid");
+    } else {
+        inputform.classList.add("is-valid");
+        inputform.classList.remove("is-invalid");
+    }
+}
+
 /*Busca CEP*/
 function buscarCep() {
 	let url = 'https://viacep.com.br/ws/' + cep.value + '/json';
