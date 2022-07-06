@@ -54,18 +54,18 @@ document.addEventListener("DOMContentLoaded", ()=>
     formCategoria.addEventListener("submit",function(event){
         event.preventDefault();
         adicionarCategoria(event);
-    },false);
+    });
     let formProdutos = document.getElementById('form_produtos');
     formProdutos.addEventListener("submit",function(event){
         event.preventDefault();
         adicionarProduto(event);
-    },false);
+    });
 
     let formAlterarProdutos = document.getElementById('modal_produtos_alterar');
     formAlterarProdutos.addEventListener("submit",function(event){
         event.preventDefault();
         alterarProduto(event);
-    },false);
+    });
 
     let selecaoNome = document.getElementById('selectNomeFipe');
     selecaoNome.addEventListener('change',preencheSelectionAnoModelo)
